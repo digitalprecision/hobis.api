@@ -1,0 +1,12 @@
+<phpunit
+    bootstrap='./Api/Bootstrap.php'
+    colors='true'>
+    <testsuites>
+        <testsuite name="Api_Module">
+            <directory>./Api/Module</directory>
+        </testsuite>
+        <testsuite name="Api_Flow">
+            <directory>./Api/Flow</directory>
+        </testsuite>
+    </testsuites>
+</phpunit>

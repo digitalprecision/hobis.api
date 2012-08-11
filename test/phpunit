@@ -1,0 +1,33 @@
+#!/usr/bin/env php
+
+<?php
+
+$rootDir = substr(__FILE__, 0, strpos(__FILE__, '/test')) . DIRECTORY_SEPARATOR . 'test';
+
+$potentialIncludeDirs = array(
+    $rootDir, // Need access to top level test dir
+    $rootDir . DIRECTORY_SEPARATOR . 'vendor' // Need to provide global access to phpunit files
+);
+
+$existingIncludeDirs = array_filter(explode(':', get_include_path()));
+
+$includeDirs = array_unique(array_merge($potentialIncludeDirs, $existingIncludeDirs));
+
+if (!set_include_path(implode(':', $includeDirs))) {
+    throw new CoreLib_Api_Exception(sprintf('Unable to set include paths: %s', serialize($includeDirs)));
+}
+
+//-----
+// MUST use our custom autoloader, as some of the phpunit lib files have been renamed via symlinks
+//  to avoid namespace collisions
+//-----
+require_once 'PHPUnitAutoload.php';
+
+PHPUnitAutoload::register();
+//-----
+
+define('PHPUnit_MAIN_METHOD', 'PHPUnit_TextUI_Command::main');
+
+PHPUnit_Util_GlobalState::$phpunitFiles = array();
+
+PHPUnit_TextUI_Command::main();

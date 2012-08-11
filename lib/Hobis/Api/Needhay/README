@@ -1,0 +1,29 @@
+The Needhay project is a NoSQL solution for writing and reading assets which do not belong in a RDBMS.
+
+	Needle
+		Container for $x number of $type collections
+		
+	Needle Collection $type
+		Container for $x number of pointer collections
+		
+	Pointer Collection
+		Container for $x number pointers
+		
+	Pointer
+		Name of the asset as stored on the filesystem (haystack)
+		
+	Haystack
+		Where all the assets are stored. Filesystem.
+		
+	Adapter
+		Needle files can be stored in a variety of ways
+			File
+				Yaml (not yet implemented)
+				Xml
+			Database
+				MySQL (not yet implemented)
+				
+	Asset
+		The file which a pointer will point to. Example assets are images and descriptions (html files).
+				
+	

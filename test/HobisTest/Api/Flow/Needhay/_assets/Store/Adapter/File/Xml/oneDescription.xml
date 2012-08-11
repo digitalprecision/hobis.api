@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<needle>
+	<context>test</context>
+	<object>object</object>
+	<id>1</id>
+    <descriptions>
+        <description>
+            <id>0</id>
+            <pointers>
+                <pointer>
+                    <assetName>description.txt</assetName>
+                </pointer>
+            </pointers>
+        </description>
+    </descriptions>
+</needle>
