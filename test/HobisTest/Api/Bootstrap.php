@@ -1,6 +1,6 @@
 <?php
 
-require_once substr(__FILE__, 0, strpos(__FILE__, '/test')) . '/lib/CoreLib/Api/Bootstrap.php';
+require_once substr(__FILE__, 0, strpos(__FILE__, '/test')) . '/lib/Hobis/Api/Bootstrap.php';
 
 /**
  * This class bootstraps the HobisTest_ system (setups up autoload etc)
