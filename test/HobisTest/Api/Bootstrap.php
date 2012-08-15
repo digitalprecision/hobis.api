@@ -29,7 +29,7 @@ class HobisTest_Api_Bootstrap
 
             self::$initialized = true;
 
-            CoreLib_Api_Log_Package::toErrorLog()->debug('HobisTest_Api_Bootstrap initalized (should only happen once)');
+            Hobis_Api_Log_Package::toErrorLog()->debug('HobisTest_Api_Bootstrap initalized (should only happen once)');
         }
     }
 
@@ -39,11 +39,11 @@ class HobisTest_Api_Bootstrap
     protected function initAutoload()
     {
         $autoloader = Zend_Loader_Autoloader::getInstance();
+
         $autoloader->registerNamespace(
             array(
                 'HobisTest_Api_Module_',
                 'HobisTest_Api_Flow_',
-                'HobisTest_Lib_'
             )
         );
     }
@@ -53,7 +53,20 @@ class HobisTest_Api_Bootstrap
     */
     protected function initIncludePaths()
     {
-        // Include paths should have been set via phpunit file
+        // Hardcoding test root dir, so there are no path collisions
+        $rootDir = substr(__FILE__, 0, strpos(__FILE__, sprintf('%stest', DIRECTORY_SEPARATOR))) . sprintf('%stest', DIRECTORY_SEPARATOR);
+
+        $potentialIncludeDirs = array(
+            $rootDir
+        );
+
+        $existingIncludeDirs = array_filter(explode(':', get_include_path()));
+
+        $includeDirs = array_unique(array_merge($potentialIncludeDirs, $existingIncludeDirs));
+
+        if (!set_include_path(implode(':', $includeDirs))) {
+            throw new Hobis_Api_Exception(sprintf('Unable to set include path(s)s: %s', serialize($includeDirs)));
+        }
     }
 }
 

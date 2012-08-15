@@ -73,16 +73,16 @@ class HobisTest_Api_Module_Directory_PackageTest extends PHPUnit_Framework_TestC
     //-----
 
     /**
-     * @expectedException CoreLib_Api_Exception
+     * @expectedException Hobis_Api_Exception
      */
     public function testFromArray_exception_noArgs()
     {
-        CoreLib_Api_Directory_Package::fromArray(array());
+        Hobis_Api_Directory_Package::fromArray(array());
     }
 
     public function testFromArray_base()
     {
-        $this->assertSame(CoreLib_Api_Directory_Package::fromArray(
+        $this->assertSame(Hobis_Api_Directory_Package::fromArray(
             array(
                 'tmp',
                 'unit_test',
@@ -93,124 +93,124 @@ class HobisTest_Api_Module_Directory_PackageTest extends PHPUnit_Framework_TestC
     }
 
     /**
-     * @expectedException CoreLib_Api_Exception
+     * @expectedException Hobis_Api_Exception
      */
     public function testFromId_exception_withZeroArg()
     {
-        CoreLib_Api_Directory_Package::fromId(0);
+        Hobis_Api_Directory_Package::fromId(0);
     }
 
     /**
-     * @expectedException CoreLib_Api_Exception
+     * @expectedException Hobis_Api_Exception
      */
     public function testFromId_exception_withAlphaArg()
     {
-        CoreLib_Api_Directory_Package::fromId('q');
+        Hobis_Api_Directory_Package::fromId('q');
     }
 
     /**
-     * @expectedException CoreLib_Api_Exception
+     * @expectedException Hobis_Api_Exception
      */
     public function testFromId_exception_withNegativeArg()
     {
-        CoreLib_Api_Directory_Package::fromId(-1);
+        Hobis_Api_Directory_Package::fromId(-1);
     }
 
     public function testFromId_base()
     {
         // /1
-        $this->assertSame(CoreLib_Api_Directory_Package::fromId(1), DIRECTORY_SEPARATOR . '1');
+        $this->assertSame(Hobis_Api_Directory_Package::fromId(1), DIRECTORY_SEPARATOR . '1');
 
         // /10/0
-        $this->assertSame(CoreLib_Api_Directory_Package::fromId(100), DIRECTORY_SEPARATOR . '10' . DIRECTORY_SEPARATOR . '0');
+        $this->assertSame(Hobis_Api_Directory_Package::fromId(100), DIRECTORY_SEPARATOR . '10' . DIRECTORY_SEPARATOR . '0');
 
         // /99/99
-        $this->assertSame(CoreLib_Api_Directory_Package::fromId(9999), DIRECTORY_SEPARATOR . '99' . DIRECTORY_SEPARATOR . '99');
+        $this->assertSame(Hobis_Api_Directory_Package::fromId(9999), DIRECTORY_SEPARATOR . '99' . DIRECTORY_SEPARATOR . '99');
 
         // /10/10/0
-        $this->assertSame(CoreLib_Api_Directory_Package::fromId(10000), DIRECTORY_SEPARATOR . '10' . DIRECTORY_SEPARATOR . '00' . DIRECTORY_SEPARATOR . '0');
+        $this->assertSame(Hobis_Api_Directory_Package::fromId(10000), DIRECTORY_SEPARATOR . '10' . DIRECTORY_SEPARATOR . '00' . DIRECTORY_SEPARATOR . '0');
 
         // /10/10/9
-        $this->assertSame(CoreLib_Api_Directory_Package::fromId(10009), DIRECTORY_SEPARATOR . '10' . DIRECTORY_SEPARATOR . '00' . DIRECTORY_SEPARATOR . '9');
+        $this->assertSame(Hobis_Api_Directory_Package::fromId(10009), DIRECTORY_SEPARATOR . '10' . DIRECTORY_SEPARATOR . '00' . DIRECTORY_SEPARATOR . '9');
 
         // /10/10/9
-        $this->assertSame(CoreLib_Api_Directory_Package::fromId(10010), DIRECTORY_SEPARATOR . '10' . DIRECTORY_SEPARATOR . '01' . DIRECTORY_SEPARATOR . '0');
+        $this->assertSame(Hobis_Api_Directory_Package::fromId(10010), DIRECTORY_SEPARATOR . '10' . DIRECTORY_SEPARATOR . '01' . DIRECTORY_SEPARATOR . '0');
     }
 
     public function testGetFormattedTimestamp_base()
     {
-        $this->assertSame(CoreLib_Api_Directory_Package::getFormattedTimestamp($this->getTimestamp()), date($this->getTimestampTemplate(), $this->getTimestamp()));
+        $this->assertSame(Hobis_Api_Directory_Package::getFormattedTimestamp($this->getTimestamp()), date($this->getTimestampTemplate(), $this->getTimestamp()));
     }
 
     public function testGetTimestampTemplate_base()
     {
-        $this->assertSame(CoreLib_Api_Directory_Package::getTimestampTemplate(), $this->getTimestampTemplate());
+        $this->assertSame(Hobis_Api_Directory_Package::getTimestampTemplate(), $this->getTimestampTemplate());
     }
 
     /**
-     * @expectedException CoreLib_Api_Exception
+     * @expectedException Hobis_Api_Exception
      */
     public function testMake_exception_noArgs()
     {
-        CoreLib_Api_Directory_Package::make(array());
+        Hobis_Api_Directory_Package::make(array());
     }
 
     /**
-     * @expectedException CoreLib_Api_Exception
+     * @expectedException Hobis_Api_Exception
      */
     public function testMake_exception_dirIsAFile()
     {
         $testFileUri = $this->getTestPath() . DIRECTORY_SEPARATOR . 'test.txt';
 
-        mkdir($this->getTestPath(), CoreLib_Api_Filesystem::PERMS_RWX__RWX__R_X, true);
+        mkdir($this->getTestPath(), Hobis_Api_Filesystem::PERMS_RWX__RWX__R_X, true);
 
         file_put_contents($testFileUri, 'Testing.');
 
-        CoreLib_Api_Directory_Package::make(array('dir' => $testFileUri));
+        Hobis_Api_Directory_Package::make(array('dir' => $testFileUri));
     }
 
     /**
-     * @expectedException CoreLib_Api_Exception
+     * @expectedException Hobis_Api_Exception
      */
     public function testMake_exception_unableToCreateNewDir()
     {
         $testPath = $this->getTestPath() . DIRECTORY_SEPARATOR . md5(rand());
 
-        CoreLib_Api_Directory_Package::make(array('dir' => $this->getTestPath(), 'perms' => CoreLib_Api_Filesystem::PERMS_R__R__R));
+        Hobis_Api_Directory_Package::make(array('dir' => $this->getTestPath(), 'perms' => Hobis_Api_Filesystem::PERMS_R__R__R));
 
-        CoreLib_Api_Directory_Package::make(array('dir' => $testPath));
+        Hobis_Api_Directory_Package::make(array('dir' => $testPath));
     }
 
     public function testMake_exception_newDirIsNotWritable()
     {
         $testPath = $this->getTestPath() . DIRECTORY_SEPARATOR . md5(rand());
 
-        CoreLib_Api_Directory_Package::make(array('dir' => $this->getTestPath(), 'perms' => CoreLib_Api_Filesystem::PERMS_R_X__R_X__E));
+        Hobis_Api_Directory_Package::make(array('dir' => $this->getTestPath(), 'perms' => Hobis_Api_Filesystem::PERMS_R_X__R_X__E));
 
         $this->assertFalse(is_writable($testPath));
     }
 
     public function testMake_base()
     {
-        CoreLib_Api_Directory_Package::make(array('dir' => $this->getTestPath()));
+        Hobis_Api_Directory_Package::make(array('dir' => $this->getTestPath()));
 
         $this->assertTrue(is_writable($this->getTestPath()));
     }
 
     /**
-     * @expectedException CoreLib_Api_Exception
+     * @expectedException Hobis_Api_Exception
      */
     public function testRemove_exception_invalidBaseDir()
     {
-        CoreLib_Api_Directory_Package::remove(null, 'tmp');
+        Hobis_Api_Directory_Package::remove(null, 'tmp');
     }
 
     /**
-     * @expectedException CoreLib_Api_Exception
+     * @expectedException Hobis_Api_Exception
      */
     public function testRemove_Exception_invalidDirToRemove()
     {
-        CoreLib_Api_Directory_Package::remove('tmp', null);
+        Hobis_Api_Directory_Package::remove('tmp', null);
     }
 
     public function testRemove_base()
@@ -218,9 +218,9 @@ class HobisTest_Api_Module_Directory_PackageTest extends PHPUnit_Framework_TestC
         $dirToRemove = $this->getTestPath() . DIRECTORY_SEPARATOR . md5(rand());
 
         try {
-            CoreLib_Api_Directory_Package::remove($this->getTestPath(), $dirToRemove);
+            Hobis_Api_Directory_Package::remove($this->getTestPath(), $dirToRemove);
         } catch (Exception $e) {
-            if ($e->getCode() !== CoreLib_Api_Exception::CODE_DIR_BASE_EQUALS_REMOVE) {
+            if ($e->getCode() !== Hobis_Api_Exception::CODE_DIR_BASE_EQUALS_REMOVE) {
                 throw $e;
             }
         }
@@ -229,16 +229,16 @@ class HobisTest_Api_Module_Directory_PackageTest extends PHPUnit_Framework_TestC
     }
 
     /**
-     *@expectedException CoreLib_Api_Exception
+     *@expectedException Hobis_Api_Exception
      */
     public function testToArray_exeption_noArgs()
     {
-        CoreLib_Api_Directory_Package::toArray(null);
+        Hobis_Api_Directory_Package::toArray(null);
     }
 
     public function testToArray_base()
     {
-        $this->assertEquals(CoreLib_Api_Directory_Package::toArray($this->getTestPath()), $this->getTestDirs());
+        $this->assertEquals(Hobis_Api_Directory_Package::toArray($this->getTestPath()), $this->getTestDirs());
     }
     //-----
 }

@@ -4,7 +4,7 @@ class Hobis_Api_Environment_Package
 {
     /**
      * Wrapper method for getting environment value
-     * 
+     *
      * @return string
      * @throws Hobis_Api_Exception
      */
@@ -18,12 +18,12 @@ class Hobis_Api_Environment_Package
         // !!CACHEME
 
         // Load variables from config
-        $variables = sfYaml::load(self::getSourceConfigFilename());        
+        $variables = sfYaml::load(self::getSourceConfigFilename());
 
         // Validate
         if (!Hobis_Api_Array_Package::populatedKey($variable, $variables)) {
             throw new Hobis_Api_Exception(sprintf('Invalid $variable: (%s)', $variable));
-        }         
+        }
 
         $value = getenv($variable);
 
@@ -31,7 +31,7 @@ class Hobis_Api_Environment_Package
         //  vs. acting as if a valid env was set
         if (!Hobis_Api_String_Package::populated($value)) {
             throw new Hobis_Api_Exception(sprintf('Environment variable (%s) has no value matching (%s)', $variable, $value));
-        }        
+        }
 
         return $value;
     }
@@ -43,12 +43,12 @@ class Hobis_Api_Environment_Package
      */
     protected static function getSourceConfigFilename()
     {
-        return realpath(dirname(__FILE__)) . '/../../../../etc/system/variable/config.yml';
+        return substr(__FILE__, 0, strpos(__FILE__, '/lib')) . '/etc/system/variable/config.yml';
     }
-    
+
     /**
      * Wrapper method for determining if current execution is via cli
-     * 
+     *
      * @return bool
      */
     public static function isCli()

@@ -58,7 +58,7 @@ class HobisTest_Api_Module_File_PackageTest extends PHPUnit_Framework_TestCase
 
     public function touchFile($fileUri)
     {
-        mkdir($this->getTestPath(), CoreLib_Api_Filesystem::PERMS_RWX__RWX__R_X, true);
+        mkdir($this->getTestPath(), Hobis_Api_Filesystem::PERMS_RWX__RWX__R_X, true);
 
         if (!@is_dir($this->getTestPath())) {
             throw new PHPUnit_Framework_Exception(sprintf('Invalid testPath: (%s)', $this->getTestPath()));
@@ -114,31 +114,31 @@ class HobisTest_Api_Module_File_PackageTest extends PHPUnit_Framework_TestCase
     //---
 
     /**
-     * @expectedException CoreLib_Api_Exception
+     * @expectedException Hobis_Api_Exception
      */
     public function testCopy_exception_noDestFileUri()
     {
-        CoreLib_Api_File_Package::copy(array('sourceFileUri' => $this->getSourceFileUri()));
+        Hobis_Api_File_Package::copy(array('sourceFileUri' => $this->getSourceFileUri()));
     }
 
     /**
-     * @expectedException CoreLib_Api_Exception
+     * @expectedException Hobis_Api_Exception
      */
     public function testCopy_exception_noSourceFileUri()
     {
-        CoreLib_Api_File_Package::copy(array('destFileUri' => $this->getDestFileUri()));
+        Hobis_Api_File_Package::copy(array('destFileUri' => $this->getDestFileUri()));
     }
 
     /**
-     * @expectedException CoreLib_Api_Exception
+     * @expectedException Hobis_Api_Exception
      */
     public function testCopy_exception_invalidSourceFile()
     {
-        CoreLib_Api_File_Package::copy(array('destFileUri' => $this->getDestFileUri(), 'sourceFileUri' => $this->getSourceFileUri()));
+        Hobis_Api_File_Package::copy(array('destFileUri' => $this->getDestFileUri(), 'sourceFileUri' => $this->getSourceFileUri()));
     }
 
     /**
-     * @expectedException CoreLib_Api_Exception
+     * @expectedException Hobis_Api_Exception
      */
     public function testCopy_exception_unableToCopy()
     {
@@ -146,24 +146,24 @@ class HobisTest_Api_Module_File_PackageTest extends PHPUnit_Framework_TestCase
 
         chmod($this->getSourceFileUri(), 0000);
 
-        CoreLib_Api_File_Package::copy(array('destFileUri' => $this->getDestFileUri(), 'sourceFileUri' => $this->getSourceFileUri()));
+        Hobis_Api_File_Package::copy(array('destFileUri' => $this->getDestFileUri(), 'sourceFileUri' => $this->getSourceFileUri()));
     }
 
     /**
-     * @expectedException CoreLib_Api_Exception
+     * @expectedException Hobis_Api_Exception
      */
     public function testCopy_exception_unableToChmod()
     {
         $this->touchFile($this->getSourceFileUri());
 
-        CoreLib_Api_File_Package::copy(array('destFileUri' => $this->getDestFileUri(), 'sourceFileUri' => $this->getSourceFileUri(), 'destFilePerms' => 'z'));
+        Hobis_Api_File_Package::copy(array('destFileUri' => $this->getDestFileUri(), 'sourceFileUri' => $this->getSourceFileUri(), 'destFilePerms' => 'z'));
     }
 
     public function testCopy_base()
     {
         $this->touchFile($this->getSourceFileUri());
 
-        CoreLib_Api_File_Package::copy(array('destFileUri' => $this->getDestFileUri(), 'sourceFileUri' => $this->getSourceFileUri()));
+        Hobis_Api_File_Package::copy(array('destFileUri' => $this->getDestFileUri(), 'sourceFileUri' => $this->getSourceFileUri()));
 
         $this->assertTrue(is_file($this->getDestFileUri()));
     }
@@ -172,72 +172,72 @@ class HobisTest_Api_Module_File_PackageTest extends PHPUnit_Framework_TestCase
     {
         $this->touchFile($this->getSourceFileUri());
 
-        CoreLib_Api_File_Package::copy(array('destFileUri' => $this->getDestFileUri(), 'sourceFileUri' => $this->getSourceFileUri(), 'destFilePerms' => CoreLib_Api_Filesystem::PERMS_RWX__E__E));
+        Hobis_Api_File_Package::copy(array('destFileUri' => $this->getDestFileUri(), 'sourceFileUri' => $this->getSourceFileUri(), 'destFilePerms' => Hobis_Api_Filesystem::PERMS_RWX__E__E));
 
         $filePerms = substr(sprintf('%o', fileperms($this->getDestFileUri())), -3);
 
-        $this->assertSame(decoct(CoreLib_Api_Filesystem::PERMS_RWX__E__E), $filePerms);
+        $this->assertSame(decoct(Hobis_Api_Filesystem::PERMS_RWX__E__E), $filePerms);
     }
     //-----
 
     /**
-     * @expectedException CoreLib_Api_Exception
+     * @expectedException Hobis_Api_Exception
      */
     public function testGetBaseName_exception_noArgs()
     {
-        CoreLib_Api_File_Package::getBaseName(null);
+        Hobis_Api_File_Package::getBaseName(null);
     }
 
     public function testGetBaseName_base()
     {
         $this->touchFile($this->getSourceFileUri());
 
-        $this->assertSame(pathinfo($this->getSourceFileUri(), PATHINFO_BASENAME), CoreLib_Api_File_Package::getBaseName($this->getSourceFileUri()));
+        $this->assertSame(pathinfo($this->getSourceFileUri(), PATHINFO_BASENAME), Hobis_Api_File_Package::getBaseName($this->getSourceFileUri()));
     }
 
     /**
-     * @expectedException CoreLib_Api_Exception
+     * @expectedException Hobis_Api_Exception
      */
     public function testGetExtension_exception_noArgs()
     {
-        CoreLib_Api_File_Package::getExtension(null);
+        Hobis_Api_File_Package::getExtension(null);
     }
 
     public function testGetExtension_base()
     {
         $this->touchFile($this->getSourceFileUri());
 
-        $this->assertSame(pathinfo($this->getSourceFileUri(), PATHINFO_EXTENSION), CoreLib_Api_File_Package::getExtension($this->getSourceFileUri()));
+        $this->assertSame(pathinfo($this->getSourceFileUri(), PATHINFO_EXTENSION), Hobis_Api_File_Package::getExtension($this->getSourceFileUri()));
     }
 
     /**
-     * @expectedException CoreLib_Api_Exception
+     * @expectedException Hobis_Api_Exception
      */
     public function testGetName_exception_noArgs()
     {
-        CoreLib_Api_File_Package::getName(null);
+        Hobis_Api_File_Package::getName(null);
     }
 
     public function testGetName_base()
     {
         $this->touchFile($this->getSourceFileUri());
 
-        $this->assertSame(pathinfo($this->getSourceFileUri(), PATHINFO_FILENAME), CoreLib_Api_File_Package::getName($this->getSourceFileUri()));
+        $this->assertSame(pathinfo($this->getSourceFileUri(), PATHINFO_FILENAME), Hobis_Api_File_Package::getName($this->getSourceFileUri()));
     }
 
     /**
-     * @expectedException CoreLib_Api_Exception
+     * @expectedException Hobis_Api_Exception
      */
     public function testIsFile_exception_noArgs()
     {
-        CoreLib_Api_File_Package::isFile(null);
+        Hobis_Api_File_Package::isFile(null);
     }
 
     public function testIsFile_base()
     {
         $this->touchFile($this->getSourceFileUri());
 
-        $this->assertTrue(CoreLib_Api_File_Package::isFile($this->getSourceFileUri()));
+        $this->assertTrue(Hobis_Api_File_Package::isFile($this->getSourceFileUri()));
     }
 
     //---
@@ -245,34 +245,34 @@ class HobisTest_Api_Module_File_PackageTest extends PHPUnit_Framework_TestCase
     //---
 
     /**
-     * @expectedException CoreLib_Api_Exception
+     * @expectedException Hobis_Api_Exception
      */
     public function testRemove_exception_noArgs()
     {
-        CoreLib_Api_File_Package::remove(array());
+        Hobis_Api_File_Package::remove(array());
     }
 
     /**
-     * @expectedException CoreLib_Api_Exception
+     * @expectedException Hobis_Api_Exception
      */
     public function testRemove_exception_removeDirInvalidBaseDir()
     {
-        CoreLib_Api_File_Package::remove(array('removeDir' => true));
+        Hobis_Api_File_Package::remove(array('removeDir' => true));
     }
 
     /**
-     * @expectedException CoreLib_Api_Exception
+     * @expectedException Hobis_Api_Exception
      */
     public function testRemove_exception_invalidFile()
     {
-        CoreLib_Api_File_Package::remove(array('fileUri' => $this->getSourceFileUri()));
+        Hobis_Api_File_Package::remove(array('fileUri' => $this->getSourceFileUri()));
     }
 
     public function testRemove_base()
     {
         $this->touchFile($this->getSourceFileUri());
 
-        CoreLib_Api_File_Package::remove(array('fileUri' => $this->getSourceFileUri()));
+        Hobis_Api_File_Package::remove(array('fileUri' => $this->getSourceFileUri()));
 
         $this->assertFalse(is_file($this->getSourceFileUri()));
     }
@@ -282,10 +282,10 @@ class HobisTest_Api_Module_File_PackageTest extends PHPUnit_Framework_TestCase
         $this->touchFile($this->getSourceFileUri());
 
         try {
-            CoreLib_Api_File_Package::remove(array('fileUri' => $this->getSourceFileUri(), 'removeDir' => true, 'baseDir' => $this->getTestBasePath()));
+            Hobis_Api_File_Package::remove(array('fileUri' => $this->getSourceFileUri(), 'removeDir' => true, 'baseDir' => $this->getTestBasePath()));
         } catch (Exception $e) {
 
-            if ($e->getCode() !== CoreLib_Api_Exception::CODE_DIR_BASE_EQUALS_REMOVE) {
+            if ($e->getCode() !== Hobis_Api_Exception::CODE_DIR_BASE_EQUALS_REMOVE) {
                 throw $e;
             }
 
@@ -305,50 +305,50 @@ class HobisTest_Api_Module_File_PackageTest extends PHPUnit_Framework_TestCase
     //---
 
     /**
-     * @expectedException CoreLib_Api_Exception
+     * @expectedException Hobis_Api_Exception
      */
     public function testTouch_exception_noArgs()
     {
-        CoreLib_Api_File_Package::touch(array());
+        Hobis_Api_File_Package::touch(array());
     }
 
     /**
-     * @expectedException CoreLib_Api_Exception
+     * @expectedException Hobis_Api_Exception
      */
     public function testTouch_exception_fileAlreadyExists()
     {
         $this->touchFile($this->getSourceFileUri());
 
-        CoreLib_Api_File_Package::touch(array('fileUri' => $this->getSourceFileUri()));
+        Hobis_Api_File_Package::touch(array('fileUri' => $this->getSourceFileUri()));
     }
 
     /**
-     * @expectedException CoreLib_Api_Exception
+     * @expectedException Hobis_Api_Exception
      */
     public function testTouch_exception_unableToCreatePath()
     {
-        CoreLib_Api_File_Package::touch(array('fileUri' => $this->getDummySourceFileUri()));
+        Hobis_Api_File_Package::touch(array('fileUri' => $this->getDummySourceFileUri()));
     }
 
     /**
-     * @expectedException CoreLib_Api_Exception
+     * @expectedException Hobis_Api_Exception
      */
     public function testTouch_exception_unableToTouch()
     {
-        CoreLib_Api_File_Package::touch(array('fileUri' => $this->getSourceFileUri(), 'timestamp' => 'z'));
+        Hobis_Api_File_Package::touch(array('fileUri' => $this->getSourceFileUri(), 'timestamp' => 'z'));
     }
 
     /**
-     * @expectedException CoreLib_Api_Exception
+     * @expectedException Hobis_Api_Exception
      */
     public function testTouch_exception_unableToChmod()
     {
-        CoreLib_Api_File_Package::touch(array('fileUri' => $this->getSourceFileUri(), 'filePerms' => 'z'));
+        Hobis_Api_File_Package::touch(array('fileUri' => $this->getSourceFileUri(), 'filePerms' => 'z'));
     }
 
     public function testTouch_base()
     {
-        CoreLib_Api_File_Package::touch(array('fileUri' => $this->getSourceFileUri()));
+        Hobis_Api_File_Package::touch(array('fileUri' => $this->getSourceFileUri()));
 
         $this->assertTrue(is_file($this->getSourceFileUri()));
     }
@@ -357,7 +357,7 @@ class HobisTest_Api_Module_File_PackageTest extends PHPUnit_Framework_TestCase
     {
         $timestamp = time();
 
-        CoreLib_Api_File_Package::touch(array('fileUri' => $this->getSourceFileUri(), 'timestamp' => $timestamp));
+        Hobis_Api_File_Package::touch(array('fileUri' => $this->getSourceFileUri(), 'timestamp' => $timestamp));
 
         clearstatcache();
 
@@ -374,41 +374,41 @@ class HobisTest_Api_Module_File_PackageTest extends PHPUnit_Framework_TestCase
     //---
 
     /**
-     * @expectedException CoreLib_Api_Exception
+     * @expectedException Hobis_Api_Exception
      */
     public function testWrite_exception_noArgs()
     {
-        CoreLib_Api_File_Package::write(array());
+        Hobis_Api_File_Package::write(array());
     }
 
     /**
-     * @expectedException CoreLib_Api_Exception
+     * @expectedException Hobis_Api_Exception
      */
     public function testWrite_exception_invalidFileUri()
     {
-        CoreLib_Api_File_Package::write(array('content' => self::TEST_CONTENT));
+        Hobis_Api_File_Package::write(array('content' => self::TEST_CONTENT));
     }
 
     /**
-     * @expectedException CoreLib_Api_Exception
+     * @expectedException Hobis_Api_Exception
      */
     public function testWrite_exception_invalidContent()
     {
-        CoreLib_Api_File_Package::write(array('fileUri' => $this->getDestFileUri()));
+        Hobis_Api_File_Package::write(array('fileUri' => $this->getDestFileUri()));
     }
 
     /**
-     * @expectedException CoreLib_Api_Exception
+     * @expectedException Hobis_Api_Exception
      */
     public function testWrite_exception_unableToSecureLock()
     {
         $this->touchFile($this->getDestFileUri());
 
-        $file = new SplFileObject($this->getDestFileUri(), CoreLib_Api_File::MODE_CREATE);
+        $file = new SplFileObject($this->getDestFileUri(), Hobis_Api_File::MODE_CREATE);
 
         $file->flock(LOCK_EX);
 
-        CoreLib_Api_File_Package::write(array('fileUri' => $this->getDestFileUri(), 'content' => self::TEST_CONTENT));
+        Hobis_Api_File_Package::write(array('fileUri' => $this->getDestFileUri(), 'content' => self::TEST_CONTENT));
 
         $file->flock(LOCK_UN);
     }
@@ -417,11 +417,11 @@ class HobisTest_Api_Module_File_PackageTest extends PHPUnit_Framework_TestCase
     {
         $this->touchFile($this->getSourceFileUri());
 
-        $file = new SplFileObject($this->getSourceFileUri(), CoreLib_Api_File::MODE_CREATE);
+        $file = new SplFileObject($this->getSourceFileUri(), Hobis_Api_File::MODE_CREATE);
 
         $file->fwrite(self::TEST_CONTENT);
 
-        CoreLib_Api_File_Package::write(array('fileUri' => $this->getDestFileUri(), 'content' => self::TEST_CONTENT));
+        Hobis_Api_File_Package::write(array('fileUri' => $this->getDestFileUri(), 'content' => self::TEST_CONTENT));
 
         $this->assertSame($file->getSize(), filesize($this->getDestFileUri()));
     }

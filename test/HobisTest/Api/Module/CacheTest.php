@@ -19,7 +19,7 @@ class HobisTest_Api_Module_CacheTest extends PHPUnit_Framework_TestCase
 
     protected function getKnownGoodKey()
     {
-        return self::TEST_KEY_PREFIX . CoreLib_Api_Cache_Key::SEPARATOR . $this->getRandomNumber();
+        return self::TEST_KEY_PREFIX . Hobis_Api_Cache_Key::SEPARATOR . $this->getRandomNumber();
     }
 
     protected function getRandomNumber()
@@ -33,7 +33,7 @@ class HobisTest_Api_Module_CacheTest extends PHPUnit_Framework_TestCase
     //-----
     public function setup()
     {
-        $this->cache        = CoreLib_Api_Cache_Package::factory(CoreLib_Api_Cache::TYPE_VOLATILE);
+        $this->cache        = Hobis_Api_Cache_Package::factory(Hobis_Api_Cache::TYPE_VOLATILE);
         $this->randomNumber = mt_rand();
     }
 
@@ -51,7 +51,7 @@ class HobisTest_Api_Module_CacheTest extends PHPUnit_Framework_TestCase
     //-----
 
     /**
-     * @expectedException CoreLib_Api_Exception
+     * @expectedException Hobis_Api_Exception
      */
     public function testDelete_exception_noArgs()
     {
@@ -68,7 +68,7 @@ class HobisTest_Api_Module_CacheTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException CoreLib_Api_Exception
+     * @expectedException Hobis_Api_Exception
      */
     public function testGet_exception_noArgs()
     {
@@ -83,7 +83,7 @@ class HobisTest_Api_Module_CacheTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException CoreLib_Api_Exception
+     * @expectedException Hobis_Api_Exception
      */
     public function testSet_exception_noArgs()
     {
@@ -91,7 +91,7 @@ class HobisTest_Api_Module_CacheTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException CoreLib_Api_Exception
+     * @expectedException Hobis_Api_Exception
      */
     public function testSet_exception_noKey()
     {
@@ -99,7 +99,7 @@ class HobisTest_Api_Module_CacheTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException CoreLib_Api_Exception
+     * @expectedException Hobis_Api_Exception
      */
     public function testSet_exception_noValue()
     {
@@ -107,7 +107,7 @@ class HobisTest_Api_Module_CacheTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException CoreLib_Api_Exception
+     * @expectedException Hobis_Api_Exception
      */
     public function testSet_exception_expiryInvalidChar()
     {
@@ -115,7 +115,7 @@ class HobisTest_Api_Module_CacheTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException CoreLib_Api_Exception
+     * @expectedException Hobis_Api_Exception
      */
     public function testSet_exception_expiryInvalidNumber()
     {
@@ -123,7 +123,7 @@ class HobisTest_Api_Module_CacheTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException CoreLib_Api_Exception
+     * @expectedException Hobis_Api_Exception
      */
     public function testSet_exception_expiryTooLow()
     {

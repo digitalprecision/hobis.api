@@ -41,6 +41,7 @@ class Hobis_Api_Bootstrap
         require_once 'Zend/Loader/Autoloader.php';
 
         $autoloader = Zend_Loader_Autoloader::getInstance();
+
         $autoloader->registerNamespace(
             array(
                 'Apache_Solr_',
@@ -74,13 +75,13 @@ class Hobis_Api_Bootstrap
      */
     protected function initIncludePaths()
     {
-        $rootDir = substr(__FILE__, 0, strpos(__FILE__, '/lib')) . DIRECTORY_SEPARATOR . 'lib';
+        $rootDir = substr(__FILE__, 0, strpos(__FILE__, sprintf('%slib', DIRECTORY_SEPARATOR))) . sprintf('%slib', DIRECTORY_SEPARATOR);
 
         // Note: If vendor app is not namespaced correctly, add to list,
         //  otherwise if namespaced correctly, having $rootDir will be enough for autoloader to work
         $potentialIncludeDirs = array(
             $rootDir,
-            $rootDir . DIRECTORY_SEPARATOR . 'SymfonyYaml',
+            $rootDir . DIRECTORY_SEPARATOR . 'SFComponent',
             $rootDir . DIRECTORY_SEPARATOR . 'PHPThumb',
             $rootDir . DIRECTORY_SEPARATOR . 'PHPMarkdown'
         );

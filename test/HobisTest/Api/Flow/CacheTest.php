@@ -14,7 +14,7 @@ class HobisTest_Api_Flow_CacheTest extends PHPUnit_Framework_TestCase
 
     protected function getKnownGoodKey()
     {
-        return self::TEST_KEY_PREFIX . CoreLib_Api_Cache_Key::SEPARATOR . $this->getRandomNumber() . CoreLib_Api_Cache_Key::SEPARATOR . '1';
+        return self::TEST_KEY_PREFIX . Hobis_Api_Cache_Key::SEPARATOR . $this->getRandomNumber() . Hobis_Api_Cache_Key::SEPARATOR . '1';
     }
 
     protected function getObject()
@@ -33,7 +33,7 @@ class HobisTest_Api_Flow_CacheTest extends PHPUnit_Framework_TestCase
     //-----
     public function setUp()
     {
-        $this->object       = $this->getMock('HobisTest_Lib_DefaultTestObject');
+        $this->object       = $this->getMock('Hobis_PhpUnit_DefaultTestObject');
         $this->randomNumber = mt_rand();
     }
 
@@ -54,7 +54,7 @@ class HobisTest_Api_Flow_CacheTest extends PHPUnit_Framework_TestCase
         // Configure object
         $this->object->expects($this->any())->method('getId')->will($this->returnValue(1));
 
-        $key = CoreLib_Api_Cache_Key_Package::factory(
+        $key = Hobis_Api_Cache_Key_Package::factory(
             array(
                 'dynamicSuffixes'   => array($this->getRandomNumber(), $this->getObject()->getId()),
                 'expiry'            => self::TEST_EXPIRY,
@@ -63,11 +63,11 @@ class HobisTest_Api_Flow_CacheTest extends PHPUnit_Framework_TestCase
             )
         );
 
-        $setStatus = CoreLib_Api_Cache_Package::set($key);
+        $setStatus = Hobis_Api_Cache_Package::set($key);
 
         $this->assertTrue($setStatus);
 
-        $cachedValue = CoreLib_Api_Cache_Package::get($key);
+        $cachedValue = Hobis_Api_Cache_Package::get($key);
 
         $this->assertSame($key->getKey(), $this->getKnownGoodKey());
         $this->assertSame($cachedValue, self::TEST_VALUE);

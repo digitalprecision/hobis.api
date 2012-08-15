@@ -1,0 +1,3 @@
+<?php echo Hobis_Api_Environment::VAR_LABEL_SERVICE ?>:
+  - <?php echo Hobis_Api_Environment::PROD . PHP_EOL ?>
+  - <?php echo Hobis_Api_Environment::DEV . PHP_EOL ?>

@@ -9,7 +9,7 @@ class HobisTest_Api_Flow_Needhay_Store_Adapter_File_XmlTest extends HobisTest_Ap
     {
         parent::setup();
 
-        $this->needleStore->setAdapterType(CoreLib_Api_Needhay_Store_Adapter::TYPE_FILE_XML);
+        $this->needleStore->setAdapterType(Hobis_Api_Needhay_Store_Adapter::TYPE_FILE_XML);
 
         $this->baselineNeedleUris = array(
             'oneImage'          => substr(__FILE__, 0, strpos(__FILE__, '/Needhay')) . '/Needhay/_assets/Store/Adapter/File/Xml/oneImage.xml',
@@ -45,19 +45,19 @@ class HobisTest_Api_Flow_Needhay_Store_Adapter_File_XmlTest extends HobisTest_Ap
         //-----
         // Write file
         //-----
-        $needleCollection = new CoreLib_Api_Needhay_Needle_Collection();
+        $needleCollection = new Hobis_Api_Needhay_Needle_Collection();
 
-        $needleCollection->setType(CoreLib_Api_Needhay_Needle_Collection::TYPE_IMAGE);
+        $needleCollection->setType(Hobis_Api_Needhay_Needle_Collection::TYPE_IMAGE);
 
-        $pointerCollection = new CoreLib_Api_Needhay_Pointer_Collection();
+        $pointerCollection = new Hobis_Api_Needhay_Pointer_Collection();
 
-        $pointerCollection->setMode(CoreLib_Api_Needhay_Pointer_Collection::MODE_ADD);
+        $pointerCollection->setMode(Hobis_Api_Needhay_Pointer_Collection::MODE_ADD);
         $pointerCollection->setId(0);
 
-        $pointer = new CoreLib_Api_Needhay_Type_Image_Pointer();
+        $pointer = new Hobis_Api_Needhay_Type_Image_Pointer();
 
-        $pointer->setSizeCode(CoreLib_Api_Image::SIZE_CODE_ORIGINAL);
-        $pointer->setAssetName(CoreLib_Api_File_Package::getBaseName($sourceImageUri));
+        $pointer->setSizeCode(Hobis_Api_Image::SIZE_CODE_ORIGINAL);
+        $pointer->setAssetName(Hobis_Api_File_Package::getBaseName($sourceImageUri));
         $pointer->setAssetContent($sourceImageUri);
 
         $pointerCollection->setPointer($pointer);
@@ -76,7 +76,7 @@ class HobisTest_Api_Flow_Needhay_Store_Adapter_File_XmlTest extends HobisTest_Ap
         $this->assertFileExists($pointer->getHaystackUri($this->needleStore));
 
         // Read file
-        $assetFileUri = $this->needleStore->read()->getNeedleCollection(CoreLib_Api_Needhay_Needle_Collection::TYPE_IMAGE)->getPointerCollection(0)->getPointer(0)->getHaystackUri($this->needleStore);
+        $assetFileUri = $this->needleStore->read()->getNeedleCollection(Hobis_Api_Needhay_Needle_Collection::TYPE_IMAGE)->getPointerCollection(0)->getPointer(0)->getHaystackUri($this->needleStore);
 
         // Validate asset file
         $this->assertFileExists($assetFileUri);
@@ -87,23 +87,23 @@ class HobisTest_Api_Flow_Needhay_Store_Adapter_File_XmlTest extends HobisTest_Ap
         //-----
         // Write file
         //-----
-        $needleCollection = new CoreLib_Api_Needhay_Needle_Collection();
+        $needleCollection = new Hobis_Api_Needhay_Needle_Collection();
 
-        $needleCollection->setType(CoreLib_Api_Needhay_Needle_Collection::TYPE_IMAGE);
+        $needleCollection->setType(Hobis_Api_Needhay_Needle_Collection::TYPE_IMAGE);
 
         for ($i = 0 ; $i <= 1; $i++) {
 
             $sourceImageUri = $this->sourceImages[$i];
 
-            $pointerCollection = new CoreLib_Api_Needhay_Pointer_Collection();
+            $pointerCollection = new Hobis_Api_Needhay_Pointer_Collection();
 
-            $pointerCollection->setMode(CoreLib_Api_Needhay_Pointer_Collection::MODE_ADD);
+            $pointerCollection->setMode(Hobis_Api_Needhay_Pointer_Collection::MODE_ADD);
             $pointerCollection->setId($i);
 
-            $pointer = new CoreLib_Api_Needhay_Type_Image_Pointer();
+            $pointer = new Hobis_Api_Needhay_Type_Image_Pointer();
 
-            $pointer->setSizeCode(CoreLib_Api_Image::SIZE_CODE_ORIGINAL);
-            $pointer->setAssetName(CoreLib_Api_File_Package::getBaseName($sourceImageUri));
+            $pointer->setSizeCode(Hobis_Api_Image::SIZE_CODE_ORIGINAL);
+            $pointer->setAssetName(Hobis_Api_File_Package::getBaseName($sourceImageUri));
             $pointer->setAssetContent($sourceImageUri);
 
             $pointerCollection->setPointer($pointer);
@@ -131,7 +131,7 @@ class HobisTest_Api_Flow_Needhay_Store_Adapter_File_XmlTest extends HobisTest_Ap
         //-----
         $needle = $this->needleStore->read();
 
-        foreach ($needle->getNeedleCollection(CoreLib_Api_Needhay_Needle_Collection::TYPE_IMAGE)->getPointerCollections() as $pointerCollection) {
+        foreach ($needle->getNeedleCollection(Hobis_Api_Needhay_Needle_Collection::TYPE_IMAGE)->getPointerCollections() as $pointerCollection) {
             foreach ($pointerCollection->getPointers() as $pointer) {
                 $assetFileUri = $this->haystackPath . DIRECTORY_SEPARATOR . $pointer->getAssetName();
                 $this->assertFileExists($assetFileUri);
@@ -142,14 +142,14 @@ class HobisTest_Api_Flow_Needhay_Store_Adapter_File_XmlTest extends HobisTest_Ap
         //-----
         // Remove an image
         //-----
-        $needleCollection = new CoreLib_Api_Needhay_Needle_Collection();
+        $needleCollection = new Hobis_Api_Needhay_Needle_Collection();
 
-        $needleCollection->setType(CoreLib_Api_Needhay_Needle_Collection::TYPE_IMAGE);
+        $needleCollection->setType(Hobis_Api_Needhay_Needle_Collection::TYPE_IMAGE);
 
-        $pointerCollection = new CoreLib_Api_Needhay_Pointer_Collection();
+        $pointerCollection = new Hobis_Api_Needhay_Pointer_Collection();
 
         $pointerCollection->setId(1);
-        $pointerCollection->setMode(CoreLib_Api_Needhay_Pointer_Collection::MODE_REMOVE);
+        $pointerCollection->setMode(Hobis_Api_Needhay_Pointer_Collection::MODE_REMOVE);
 
         $needleCollection->setPointerCollection($pointerCollection);
 
@@ -172,18 +172,18 @@ class HobisTest_Api_Flow_Needhay_Store_Adapter_File_XmlTest extends HobisTest_Ap
         //-----
         // Write file
         //-----
-        $needleCollection = new CoreLib_Api_Needhay_Needle_Collection();
+        $needleCollection = new Hobis_Api_Needhay_Needle_Collection();
 
-        $needleCollection->setType(CoreLib_Api_Needhay_Needle_Collection::TYPE_DESCRIPTION);
+        $needleCollection->setType(Hobis_Api_Needhay_Needle_Collection::TYPE_DESCRIPTION);
 
-        $pointerCollection = new CoreLib_Api_Needhay_Pointer_Collection();
+        $pointerCollection = new Hobis_Api_Needhay_Pointer_Collection();
 
-        $pointerCollection->setMode(CoreLib_Api_Needhay_Pointer_Collection::MODE_ADD);
+        $pointerCollection->setMode(Hobis_Api_Needhay_Pointer_Collection::MODE_ADD);
         $pointerCollection->setId(0);
 
-        $pointer = new CoreLib_Api_Needhay_Type_Description_Pointer();
+        $pointer = new Hobis_Api_Needhay_Type_Description_Pointer();
 
-        $pointer->setAssetName(CoreLib_Api_Needhay_Type_Description::ASSET_NAME);
+        $pointer->setAssetName(Hobis_Api_Needhay_Type_Description::ASSET_NAME);
         $pointer->setAssetContent($this->descriptions);
 
         $pointerCollection->setPointer($pointer);
@@ -204,7 +204,7 @@ class HobisTest_Api_Flow_Needhay_Store_Adapter_File_XmlTest extends HobisTest_Ap
         //-----
         // Read file
         //-----
-        $assetFileUri = $this->needleStore->read()->getNeedleCollection(CoreLib_Api_Needhay_Needle_Collection::TYPE_DESCRIPTION)->getPointerCollection(0)->getPointer(0)->getHaystackUri($this->needleStore);
+        $assetFileUri = $this->needleStore->read()->getNeedleCollection(Hobis_Api_Needhay_Needle_Collection::TYPE_DESCRIPTION)->getPointerCollection(0)->getPointer(0)->getHaystackUri($this->needleStore);
         //-----
 
         // Validate asset file
@@ -216,18 +216,18 @@ class HobisTest_Api_Flow_Needhay_Store_Adapter_File_XmlTest extends HobisTest_Ap
         //-----
         // Description
         //-----
-        $needleCollection = new CoreLib_Api_Needhay_Needle_Collection();
+        $needleCollection = new Hobis_Api_Needhay_Needle_Collection();
 
-        $needleCollection->setType(CoreLib_Api_Needhay_Needle_Collection::TYPE_DESCRIPTION);
+        $needleCollection->setType(Hobis_Api_Needhay_Needle_Collection::TYPE_DESCRIPTION);
 
-        $pointerCollection = new CoreLib_Api_Needhay_Pointer_Collection();
+        $pointerCollection = new Hobis_Api_Needhay_Pointer_Collection();
 
-        $pointerCollection->setMode(CoreLib_Api_Needhay_Pointer_Collection::MODE_ADD);
+        $pointerCollection->setMode(Hobis_Api_Needhay_Pointer_Collection::MODE_ADD);
         $pointerCollection->setId(0);
 
-        $pointer = new CoreLib_Api_Needhay_Type_Description_Pointer();
+        $pointer = new Hobis_Api_Needhay_Type_Description_Pointer();
 
-        $pointer->setAssetName(CoreLib_Api_Needhay_Type_Description::ASSET_NAME);
+        $pointer->setAssetName(Hobis_Api_Needhay_Type_Description::ASSET_NAME);
         $pointer->setAssetContent($this->descriptions);
 
         $pointerCollection->setPointer($pointer);
@@ -242,19 +242,19 @@ class HobisTest_Api_Flow_Needhay_Store_Adapter_File_XmlTest extends HobisTest_Ap
         //-----
         $sourceImageUri = $this->sourceImages[0];
 
-        $needleCollection = new CoreLib_Api_Needhay_Needle_Collection();
+        $needleCollection = new Hobis_Api_Needhay_Needle_Collection();
 
-        $needleCollection->setType(CoreLib_Api_Needhay_Needle_Collection::TYPE_IMAGE);
+        $needleCollection->setType(Hobis_Api_Needhay_Needle_Collection::TYPE_IMAGE);
 
-        $pointerCollection = new CoreLib_Api_Needhay_Pointer_Collection();
+        $pointerCollection = new Hobis_Api_Needhay_Pointer_Collection();
 
-        $pointerCollection->setMode(CoreLib_Api_Needhay_Pointer_Collection::MODE_ADD);
+        $pointerCollection->setMode(Hobis_Api_Needhay_Pointer_Collection::MODE_ADD);
         $pointerCollection->setId(0);
 
-        $pointer = new CoreLib_Api_Needhay_Type_Image_Pointer();
+        $pointer = new Hobis_Api_Needhay_Type_Image_Pointer();
 
-        $pointer->setSizeCode(CoreLib_Api_Image::SIZE_CODE_ORIGINAL);
-        $pointer->setAssetName(CoreLib_Api_File_Package::getBaseName($sourceImageUri));
+        $pointer->setSizeCode(Hobis_Api_Image::SIZE_CODE_ORIGINAL);
+        $pointer->setAssetName(Hobis_Api_File_Package::getBaseName($sourceImageUri));
         $pointer->setAssetContent($sourceImageUri);
 
         $pointerCollection->setPointer($pointer);
@@ -274,21 +274,21 @@ class HobisTest_Api_Flow_Needhay_Store_Adapter_File_XmlTest extends HobisTest_Ap
         $needle = $this->needleStore->read();
 
         // Validate haystack files
-        $this->assertFileExists($needle->getNeedleCollection(CoreLib_Api_Needhay_Needle_Collection::TYPE_DESCRIPTION)->getPointerCollection(0)->getPointer(0)->getHaystackUri($this->needleStore));
-        $this->assertFileExists($needle->getNeedleCollection(CoreLib_Api_Needhay_Needle_Collection::TYPE_IMAGE)->getPointerCollection(0)->getPointer(0)->getHaystackUri($this->needleStore));
+        $this->assertFileExists($needle->getNeedleCollection(Hobis_Api_Needhay_Needle_Collection::TYPE_DESCRIPTION)->getPointerCollection(0)->getPointer(0)->getHaystackUri($this->needleStore));
+        $this->assertFileExists($needle->getNeedleCollection(Hobis_Api_Needhay_Needle_Collection::TYPE_IMAGE)->getPointerCollection(0)->getPointer(0)->getHaystackUri($this->needleStore));
 
         //-----
         // Remove description collection
         //-----
-        $needle = new CoreLib_Api_Needhay_Needle();
+        $needle = new Hobis_Api_Needhay_Needle();
 
-        $needleCollection = new CoreLib_Api_Needhay_Needle_Collection();
+        $needleCollection = new Hobis_Api_Needhay_Needle_Collection();
 
-        $needleCollection->setType(CoreLib_Api_Needhay_Needle_Collection::TYPE_DESCRIPTION);
+        $needleCollection->setType(Hobis_Api_Needhay_Needle_Collection::TYPE_DESCRIPTION);
 
-        $pointerCollection = new CoreLib_Api_Needhay_Pointer_Collection();
+        $pointerCollection = new Hobis_Api_Needhay_Pointer_Collection();
 
-        $pointerCollection->setMode(CoreLib_Api_Needhay_Pointer_Collection::MODE_REMOVE);
+        $pointerCollection->setMode(Hobis_Api_Needhay_Pointer_Collection::MODE_REMOVE);
         $pointerCollection->setId(0);
 
         $needleCollection->setPointerCollection($pointerCollection);
@@ -302,8 +302,8 @@ class HobisTest_Api_Flow_Needhay_Store_Adapter_File_XmlTest extends HobisTest_Ap
         $this->assertXmlFileEqualsXmlFile($this->baselineNeedleUris['oneImage'], $this->needleStore->getNeedleUri());
 
         // Validate asset files
-        $this->assertFileExists($this->needle->getNeedleCollection(CoreLib_Api_Needhay_Needle_Collection::TYPE_IMAGE)->getPointerCollection(0)->getPointer(0)->getHaystackUri($this->needleStore));
-        $this->assertFalse(is_file($this->needle->getNeedleCollection(CoreLib_Api_Needhay_Needle_Collection::TYPE_DESCRIPTION)->getPointerCollection(0)->getPointer(0)->getHaystackUri($this->needleStore)));
+        $this->assertFileExists($this->needle->getNeedleCollection(Hobis_Api_Needhay_Needle_Collection::TYPE_IMAGE)->getPointerCollection(0)->getPointer(0)->getHaystackUri($this->needleStore));
+        $this->assertFalse(is_file($this->needle->getNeedleCollection(Hobis_Api_Needhay_Needle_Collection::TYPE_DESCRIPTION)->getPointerCollection(0)->getPointer(0)->getHaystackUri($this->needleStore)));
     }
     //-----
 }

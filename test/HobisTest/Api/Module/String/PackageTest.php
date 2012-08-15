@@ -7,94 +7,94 @@ class HobisTest_Api_Module_String_PackageTest extends PHPUnit_Framework_TestCase
     //-----
 
     /**
-     * @expectedException CoreLib_Api_Exception
+     * @expectedException Hobis_Api_Exception
      */
     public function testFromArray_exception_noArgs()
     {
-        CoreLib_Api_String_Package::fromArray(array());
+        Hobis_Api_String_Package::fromArray(array());
     }
 
     public function testFromArray_base()
     {
-        $this->assertSame(CoreLib_Api_String_Package::fromArray(array('a', 'b')), 'a_b');
+        $this->assertSame(Hobis_Api_String_Package::fromArray(array('a', 'b')), 'a_b');
 
-        $this->assertSame(CoreLib_Api_String_Package::fromArray(array('a', 'b'), '+'), 'a+b');
+        $this->assertSame(Hobis_Api_String_Package::fromArray(array('a', 'b'), '+'), 'a+b');
     }
 
     public function testPopulated_base()
     {
-        $this->assertFalse(CoreLib_Api_String_Package::populated(null));
+        $this->assertFalse(Hobis_Api_String_Package::populated(null));
 
-        $this->assertTrue(CoreLib_Api_String_Package::populated('test'));
+        $this->assertTrue(Hobis_Api_String_Package::populated('test'));
 
-        $this->assertFalse(CoreLib_Api_String_Package::populated(array('foo' => 'bar')));
+        $this->assertFalse(Hobis_Api_String_Package::populated(array('foo' => 'bar')));
 
         //-----
         // Object test
         //-----
-        $object = $this->getMock('HobisTest_Lib_DefaultTestObject');
+        $object = $this->getMock('Hobis_PhpUnit_DefaultTestObject');
 
         // Object hasn't been configured with __toString yet, so expect a fail
-        $this->assertFalse(CoreLib_Api_String_Package::populated($object));
+        $this->assertFalse(Hobis_Api_String_Package::populated($object));
 
-        $object->expects($this->any())->method('__toString')->will($this->returnValue('HobisTest_Lib_DefaultTestObject'));
+        $object->expects($this->any())->method('__toString')->will($this->returnValue('Hobis_PhpUnit_DefaultTestObject'));
 
         // Object has been configured with __toString, so expect a pass
-        $this->assertTrue(CoreLib_Api_String_Package::populated($object));
+        $this->assertTrue(Hobis_Api_String_Package::populated($object));
         //-----
     }
 
     public function testPopulatedNumeric_base()
     {
-        $this->assertFalse(CoreLib_Api_String_Package::populatedNumeric(null));
-        $this->assertFalse(CoreLib_Api_String_Package::populatedNumeric('test'));
-        $this->assertTrue(CoreLib_Api_String_Package::populatedNumeric(1));
+        $this->assertFalse(Hobis_Api_String_Package::populatedNumeric(null));
+        $this->assertFalse(Hobis_Api_String_Package::populatedNumeric('test'));
+        $this->assertTrue(Hobis_Api_String_Package::populatedNumeric(1));
     }
 
     /**
-     * @expectedException CoreLib_Api_Exception
+     * @expectedException Hobis_Api_Exception
      */
     public function testTokenize_exception_noArgs()
     {
-        CoreLib_Api_String_Package::tokenize(array());
+        Hobis_Api_String_Package::tokenize(array());
     }
 
     /**
-     * @expectedException CoreLib_Api_Exception
+     * @expectedException Hobis_Api_Exception
      */
     public function testTokenize_exception_InvalidChar()
     {
-        CoreLib_Api_String_Package::tokenize(array('value' => '[This is my test string]'));
+        Hobis_Api_String_Package::tokenize(array('value' => '[This is my test string]'));
     }
 
     public function testTokenize_base()
     {
         // Default tokenize
-        $this->assertSame(CoreLib_Api_String_Package::tokenize(array('value' => 'a b c d')), 'a-b-c-d');
+        $this->assertSame(Hobis_Api_String_Package::tokenize(array('value' => 'a b c d')), 'a-b-c-d');
 
         // Custom separator
-        $this->assertSame(CoreLib_Api_String_Package::tokenize(array('value' => 'a b c d', 'separator' => '+')), 'a+b+c+d');
+        $this->assertSame(Hobis_Api_String_Package::tokenize(array('value' => 'a b c d', 'separator' => '+')), 'a+b+c+d');
 
         // Custom chars to remove
-        $this->assertSame(CoreLib_Api_String_Package::tokenize(array('value' => 'a b c d', 'charsToRemove' => array('a', 'c'))), '-b--d');
+        $this->assertSame(Hobis_Api_String_Package::tokenize(array('value' => 'a b c d', 'charsToRemove' => array('a', 'c'))), '-b--d');
 
         // Allowed chars
-        $this->assertSame(CoreLib_Api_String_Package::tokenize(array('value' => '$a #b c^ d', 'allowedChars' => array('$', '#', '^'))), '$a-#b-c^-d');
+        $this->assertSame(Hobis_Api_String_Package::tokenize(array('value' => '$a #b c^ d', 'allowedChars' => array('$', '#', '^'))), '$a-#b-c^-d');
 
         // Remove quotes
-        $this->assertSame(CoreLib_Api_String_Package::tokenize(array('value' => 'a "b" \'c\' d')), 'a-b-c-d');
+        $this->assertSame(Hobis_Api_String_Package::tokenize(array('value' => 'a "b" \'c\' d')), 'a-b-c-d');
 
         // Html entity decode
-        $this->assertSame(CoreLib_Api_String_Package::tokenize(array('value' => 'a <b>b</b> c <i>d</i>')), 'a--b-b--b--c--i-d--i-');
+        $this->assertSame(Hobis_Api_String_Package::tokenize(array('value' => 'a <b>b</b> c <i>d</i>')), 'a--b-b--b--c--i-d--i-');
 
         // Alpha chars only
-        $this->assertSame(CoreLib_Api_String_Package::tokenize(array('value' => '$a #b c^ d')), '-a--b-c--d');
+        $this->assertSame(Hobis_Api_String_Package::tokenize(array('value' => '$a #b c^ d')), '-a--b-c--d');
 
         // Lower case
-        $this->assertSame(CoreLib_Api_String_Package::tokenize(array('value' => 'A B c D')), 'a-b-c-d');
+        $this->assertSame(Hobis_Api_String_Package::tokenize(array('value' => 'A B c D')), 'a-b-c-d');
 
         // Urlencode
-        $this->assertSame(CoreLib_Api_String_Package::tokenize(array('value' => 'a=alpha&b=beta&c=charlie&d=delta', 'allowedChars' => array('&', '='), 'urlEncode' => true)), 'a%3Dalpha%26b%3Dbeta%26c%3Dcharlie%26d%3Ddelta');
+        $this->assertSame(Hobis_Api_String_Package::tokenize(array('value' => 'a=alpha&b=beta&c=charlie&d=delta', 'allowedChars' => array('&', '='), 'urlEncode' => true)), 'a%3Dalpha%26b%3Dbeta%26c%3Dcharlie%26d%3Ddelta');
     }
     //-----
 }
