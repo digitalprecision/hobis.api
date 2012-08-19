@@ -3,6 +3,40 @@
 class Hobis_Api_Environment_Package
 {
     /**
+     * Singleton for application level etc path
+     *  This is needed so we can access app level specific configuration settings
+     *  such as database.yml
+     *
+     * @var string
+     */
+    protected static $appEtcPath = null;
+
+    /**
+     * Setter for appEtcPath singleton
+     *
+     * @param string
+     */
+    public static function setAppEtcPath($path)
+    {
+        self::$appEtcPath = $path;
+    }
+
+    /**
+     * Getter for appEtcPath singleton
+     *
+     * @return string
+     * @throws Hobis_Api_Exception
+     */
+    public static function getAppEtcPath()
+    {
+        if (is_null(self::$appEtcPath)) {
+            throw new Hobis_Api_Exception(sprintf('Invalid appEtcPath: %s', self::$appEtcPath));
+        }
+
+        return self::$appEtcPath;
+    }
+
+    /**
      * Wrapper method for getting environment value
      *
      * @return string

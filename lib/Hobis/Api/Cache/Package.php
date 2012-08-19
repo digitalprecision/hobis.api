@@ -102,7 +102,13 @@ class Hobis_Api_Cache_Package
 	 */
 	protected static function getConfig()
 	{
-        return substr(__FILE__, 0, strpos(__FILE__, '/lib')) . '/etc/cache/connection.yml';
+        return Hobis_Api_Directory_Package::fromArray(
+            array(
+                Hobis_Api_Environment_Package::getAppEtcPath(),
+                'cache',
+                'connection.yml'
+            )
+        );
 	}
 
     /**
