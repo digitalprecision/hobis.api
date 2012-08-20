@@ -89,7 +89,7 @@ class Hobis_Api_Database_Package
 	{
         return Hobis_Api_Directory_Package::fromArray(
             array(
-                Hobis_Api_Environment_Package::getAppEtcPath(),
+                Hobis_Api_Environment_Package::getAppConfigPath(),
                 'database',
                 'connection.yml'
             )

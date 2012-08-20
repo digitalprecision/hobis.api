@@ -104,7 +104,7 @@ class Hobis_Api_Cache_Package
 	{
         return Hobis_Api_Directory_Package::fromArray(
             array(
-                Hobis_Api_Environment_Package::getAppEtcPath(),
+                Hobis_Api_Environment_Package::getAppConfigPath(),
                 'cache',
                 'connection.yml'
             )

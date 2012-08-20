@@ -1,0 +1,7 @@
+port: 11211
+<?php echo Hobis_Api_Cache::TYPE_VOLATILE; ?>:
+  servers:
+    - vcache-1
+<?php echo Hobis_Api_Cache::TYPE_PERSISTENT; ?>:
+  servers:
+    - pcache-1

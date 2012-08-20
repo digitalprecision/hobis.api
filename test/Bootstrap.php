@@ -1,6 +1,6 @@
 <?php
 
-require_once substr(__FILE__, 0, strpos(__FILE__, '/test')) . '/lib/Hobis/Api/Bootstrap.php';
+require_once substr(__FILE__, 0, strpos(__FILE__, sprintf('%stest', DIRECTORY_SEPARATOR))) . sprintf('%slib%sHobis%sApi%sBootstrap.php', DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR);
 
 /**
  * This class bootstraps the HobisTest_ system (setups up autoload etc)
@@ -26,6 +26,7 @@ class HobisTest_Api_Bootstrap
 
             $bootstrap->initIncludePaths();
             $bootstrap->initAutoload();
+            $bootstrap->registerAppConfigPath();
 
             self::$initialized = true;
 
@@ -48,13 +49,24 @@ class HobisTest_Api_Bootstrap
         );
     }
 
+    /**
+     * Normally this app config path registration doesn't occur at this (the api) layer, but for testing we need to
+     *  register an app path with test configs
+     */
+    protected function registerAppConfigPath()
+    {
+        $configPath = substr(__FILE__, 0, strpos(__FILE__, sprintf('%stest', DIRECTORY_SEPARATOR))) . sprintf('%stest%setc', DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR);
+
+        Hobis_Api_Environment_Package::setAppConfigPath($configPath);
+    }
+
    /**
     * Wrapper method for initializing include paths
     */
     protected function initIncludePaths()
     {
         // Hardcoding test root dir, so there are no path collisions
-        $rootDir = substr(__FILE__, 0, strpos(__FILE__, sprintf('%stest', DIRECTORY_SEPARATOR))) . sprintf('%stest', DIRECTORY_SEPARATOR);
+        $rootDir = substr(__FILE__, 0, strpos(__FILE__, sprintf('%stest', DIRECTORY_SEPARATOR))) . sprintf('%stest%slib', DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR);
 
         $potentialIncludeDirs = array(
             $rootDir

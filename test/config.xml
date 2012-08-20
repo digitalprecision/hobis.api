@@ -1,0 +1,12 @@
+<phpunit
+    bootstrap='./Bootstrap.php'
+    colors='true'>
+    <testsuites>
+        <testsuite name="Flow">
+            <directory>./lib/HobisTest/Api/Flow</directory>
+        </testsuite>
+        <testsuite name="Module">
+            <directory>./lib/HobisTest/Api/Module</directory>
+        </testsuite>
+    </testsuites>
+</phpunit>
