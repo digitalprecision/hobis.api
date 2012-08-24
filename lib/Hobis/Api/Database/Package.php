@@ -91,7 +91,7 @@ class Hobis_Api_Database_Package
             array(
                 Hobis_Api_Environment_Package::getAppConfigPath(),
                 'database',
-                'connection.yml'
+                'config.yml'
             )
         );
 	}

@@ -1,6 +1,6 @@
 <?php
 
-require_once substr(__FILE__, 0, strpos(__FILE__, sprintf('%stest', DIRECTORY_SEPARATOR))) . sprintf('%slib%sHobis%sApi%sBootstrap.php', DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR);
+require_once substr(__FILE__, 0, strpos(__FILE__,'/test')) . '/lib/Hobis/Api/Bootstrap.php';
 
 /**
  * This class bootstraps the HobisTest_ system (setups up autoload etc)
@@ -55,7 +55,7 @@ class HobisTest_Api_Bootstrap
      */
     protected function registerAppConfigPath()
     {
-        $configPath = substr(__FILE__, 0, strpos(__FILE__, sprintf('%stest', DIRECTORY_SEPARATOR))) . sprintf('%stest%setc', DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR);
+        $configPath = substr(__FILE__, 0, strpos(__FILE__, '/test')) . '/test/etc';
 
         Hobis_Api_Environment_Package::setAppConfigPath($configPath);
     }
@@ -66,18 +66,18 @@ class HobisTest_Api_Bootstrap
     protected function initIncludePaths()
     {
         // Hardcoding test root dir, so there are no path collisions
-        $rootDir = substr(__FILE__, 0, strpos(__FILE__, sprintf('%stest', DIRECTORY_SEPARATOR))) . sprintf('%stest%slib', DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR);
+        $rootPath = substr(__FILE__, 0, strpos(__FILE__, '/test')) . '/test/lib';
 
-        $potentialIncludeDirs = array(
-            $rootDir
+        $potentialIncludePaths = array(
+            $rootPath
         );
 
-        $existingIncludeDirs = array_filter(explode(':', get_include_path()));
+        $existingIncludePaths = array_filter(explode(':', get_include_path()));
 
-        $includeDirs = array_unique(array_merge($potentialIncludeDirs, $existingIncludeDirs));
+        $includePaths = array_unique(array_merge($potentialIncludePaths, $existingIncludePaths));
 
-        if (!set_include_path(implode(':', $includeDirs))) {
-            throw new Hobis_Api_Exception(sprintf('Unable to set include path(s)s: %s', serialize($includeDirs)));
+        if (!set_include_path(implode(':', $includePaths))) {
+            throw new Hobis_Api_Exception(sprintf('Unable to set include path(s)s: %s', serialize($includePaths)));
         }
     }
 }

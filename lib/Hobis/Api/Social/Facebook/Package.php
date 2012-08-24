@@ -13,11 +13,11 @@ class Hobis_Api_Social_Facebook_Package
     {
         //-----
         // Localize
-        //-----        
+        //-----
         $domain         = (Hobis_Api_Array_Package::populatedKey('domain', $options)) ? $options['domain'] : null;
         $languageCode   = (Hobis_Api_Array_Package::populatedKey('languageCode', $options)) ? $options['languageCode'] : null;
         $siteId         = (Hobis_Api_Array_Package::populatedKey('siteId', $options)) ? $options['siteId'] : null;
-        //-----        
+        //-----
 
         //-----
         // Validate
@@ -28,25 +28,25 @@ class Hobis_Api_Social_Facebook_Package
             throw new Hobis_Api_Exception('Invalid $siteId');
         }
 
-        Hobis_Api_I18N_Package::validateLanguageCode($languageCode); 
+        Hobis_Api_I18N_Package::validateLanguageCode($languageCode);
         //-----
-        
-        $env = Hobis_Api_Environment_Package::getValue(Hobis_Api_Environment::VAR_LABEL_SERVICE);         
+
+        $env = Hobis_Api_Environment_Package::getValue(Hobis_Api_Environment::VAR_LABEL_SERVICE);
 
         //-----
         // Load config settings
         //-----
-        $facebookSettings = sfYaml::load(self::getSourceConfigFilename());        
+        $settings = sfYaml::load(self::getConfig());
 
-        if (!Hobis_Api_Array_Package::populatedKey($siteId, $facebookSettings)) {
-            throw new Hobis_Api_Exception('Invalid $facebookSettings[siteId]');
-        } elseif (!Hobis_Api_String_Package::populatedNumeric($facebookSettings[$siteId][Hobis_Api_Social_Facebook::APP_ID][$env])) {
-            throw new Hobis_Api_Exception('Invalid $facebookSettings[APP_ID]');
+        if (!Hobis_Api_Array_Package::populatedKey($siteId, $settings)) {
+            throw new Hobis_Api_Exception('Invalid $settings[siteId]');
+        } elseif (!Hobis_Api_String_Package::populatedNumeric($settings[$siteId][Hobis_Api_Social_Facebook::APP_ID][$env])) {
+            throw new Hobis_Api_Exception('Invalid $settings[APP_ID]');
         }
         //-----
 
         // Kiss
-        $appId = $facebookSettings[$siteId][Hobis_Api_Social_Facebook::APP_ID][$env];
+        $appId = $settings[$siteId][Hobis_Api_Social_Facebook::APP_ID][$env];
 
         return <<<SDK
             window.fbAsyncInit = function() {
@@ -58,10 +58,10 @@ class Hobis_Api_Social_Facebook_Package
                   oauth      : true, // enable OAuth 2.0
                   xfbml      : true  // parse XFBML
                 });
-            
+
                 // Additional initialization code here
               };
-            
+
               // Load the SDK Asynchronously
               (function(d){
                  var js, id = 'facebook-jssdk'; if (d.getElementById(id)) {return;}
@@ -87,8 +87,15 @@ SDK;
      *
      * @return path
      */
-    protected static function getSourceConfigFilename()
+    protected static function getConfig()
     {
-        return realpath(dirname(__FILE__)) . '/../../../../../etc/social/facebook/config.yml';
+        return Hobis_Api_Directory_Package::fromArray(
+            array(
+                Hobis_Api_Environment_Package::getAppConfigPath(),
+                'social',
+                'facebook',
+                'config.yml'
+            )
+        );
     }
 }

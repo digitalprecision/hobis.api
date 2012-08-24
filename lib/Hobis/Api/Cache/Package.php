@@ -106,7 +106,7 @@ class Hobis_Api_Cache_Package
             array(
                 Hobis_Api_Environment_Package::getAppConfigPath(),
                 'cache',
-                'connection.yml'
+                'config.yml'
             )
         );
 	}

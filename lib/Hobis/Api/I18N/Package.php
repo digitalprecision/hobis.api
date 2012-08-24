@@ -10,17 +10,14 @@ class Hobis_Api_I18N_Package
      */
     public static function validateLanguageCode($languageCode)
     {
-        //-----
-        // Attempt to instantiate new dbo
-        //-----
-        $languageSettings = sfYaml::load(self::getLanguageConfigFilename());
+        $settings = sfYaml::load(self::getConfig());
 
-        if ((!Hobis_Api_Array_Package::populated($languageSettings)) ||
-            (!Hobis_Api_Array_Package::populatedKey('codes', $languageSettings))) {
-            throw new Hobis_Api_Exception('Invalid $languageSettings');
+        if ((!Hobis_Api_Array_Package::populated($settings)) ||
+            (!Hobis_Api_Array_Package::populatedKey('codes', $settings))) {
+            throw new Hobis_Api_Exception('Invalid $settings');
         }
 
-        $languageCodes = $languageSettings['codes'];
+        $languageCodes = $settings['codes'];
 
         if (!Hobis_Api_Array_Package::populatedKey($languageCode, $languageCodes)) {
             throw new Hobis_Api_Exception('Invalid $languageCode');
@@ -32,8 +29,14 @@ class Hobis_Api_I18N_Package
      *
      * @return path
      */
-    protected static function getLanguageConfigFilename()
+    protected static function getConfig()
     {
-        return realpath(dirname(__FILE__)) . '/../../../../etc/i18n/language/config.yml';
+        return Hobis_Api_Directory_Package::fromArray(
+            array(
+                Hobis_Api_Environment_Package::getAppConfigPath(),
+                'i18n',
+                'config.yml'
+            )
+        );
     }
 }

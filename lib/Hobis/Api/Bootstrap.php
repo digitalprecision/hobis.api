@@ -75,23 +75,23 @@ class Hobis_Api_Bootstrap
      */
     protected function initIncludePaths()
     {
-        $rootDir = substr(__FILE__, 0, strpos(__FILE__, sprintf('%slib', DIRECTORY_SEPARATOR))) . sprintf('%slib', DIRECTORY_SEPARATOR);
+        $rootPath = substr(__FILE__, 0, strpos(__FILE__, '/lib')) . '/lib';
 
         // Note: If vendor app is not namespaced correctly, add to list,
-        //  otherwise if namespaced correctly, having $rootDir will be enough for autoloader to work
-        $potentialIncludeDirs = array(
-            $rootDir,
-            $rootDir . DIRECTORY_SEPARATOR . 'SFComponent',
-            $rootDir . DIRECTORY_SEPARATOR . 'PHPThumb',
-            $rootDir . DIRECTORY_SEPARATOR . 'PHPMarkdown'
+        //  otherwise if namespaced correctly, having $rootPath will be enough for autoloader to work
+        $potentialIncludePaths = array(
+            $rootPath,
+            $rootPath . DIRECTORY_SEPARATOR . 'SFComponent',
+            $rootPath . DIRECTORY_SEPARATOR . 'PHPThumb',
+            $rootPath . DIRECTORY_SEPARATOR . 'PHPMarkdown'
         );
 
-        $existingIncludeDirs = array_filter(explode(':', get_include_path()));
+        $existingIncludePaths = array_filter(explode(':', get_include_path()));
 
-        $includeDirs = array_unique(array_merge($potentialIncludeDirs, $existingIncludeDirs));
+        $includePaths = array_unique(array_merge($potentialIncludePaths, $existingIncludePaths));
 
-        if (!set_include_path(implode(':', $includeDirs))) {
-            throw new Hobis_Api_Exception(sprintf('Unable to set include path(s)s: %s', serialize($includeDirs)));
+        if (!set_include_path(implode(':', $includePaths))) {
+            throw new Hobis_Api_Exception(sprintf('Unable to set include path(s)s: %s', serialize($includePaths)));
         }
     }
 }

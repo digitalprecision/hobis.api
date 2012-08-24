@@ -42,32 +42,32 @@ class Hobis_Api_Apache_Solr_Service_Package
         }
 
         // Parse config
-        $configSettings = sfYaml::load(self::getSourceConfigFilename());
+        $settings = sfYaml::load(self::getConfig());
 
         //-----
         // Validate required config values
         //-----
-        if (!Hobis_Api_Array_Package::populated($configSettings)) {
-        	throw new Hobis_Api_Exception('Invalid $configSettings');
+        if (!Hobis_Api_Array_Package::populated($settings)) {
+        	throw new Hobis_Api_Exception('Invalid $settings');
         }
 
-		elseif (!Hobis_Api_Array_Package::populatedKey($siteId, $configSettings)) {
-            throw new Hobis_Api_Exception('Invalid config entry $configSettings[$siteId]');
+		elseif (!Hobis_Api_Array_Package::populatedKey($siteId, $settings)) {
+            throw new Hobis_Api_Exception('Invalid config entry $settings[$siteId]');
         }
 
-		elseif (!Hobis_Api_Array_Package::populatedKey($core, $configSettings[$siteId])) {
-            throw new Hobis_Api_Exception('Invalid config entry $configSettings[$siteId][$context]');
+		elseif (!Hobis_Api_Array_Package::populatedKey($core, $settings[$siteId])) {
+            throw new Hobis_Api_Exception('Invalid config entry $settings[$siteId][$context]');
         }
 
-        elseif (!Hobis_Api_Array_Package::populatedKey($context, $configSettings[$siteId])) {
-            throw new Hobis_Api_Exception('Invalid config entry $configSettings[$siteId][$context]');
+        elseif (!Hobis_Api_Array_Package::populatedKey($context, $settings[$siteId])) {
+            throw new Hobis_Api_Exception('Invalid config entry $settings[$siteId][$context]');
         }
         //-----
 
         $instance = new Hobis_Api_Apache_Solr_Service(
-            $configSettings[$siteId][$context][Hobis_Api_Apache_Solr::CONFIG_FILE_KEY_HOST],
-            $configSettings[$siteId][$context][Hobis_Api_Apache_Solr::CONFIG_FILE_KEY_PORT],
-            $configSettings[$siteId][$core][Hobis_Api_Apache_Solr::CONFIG_FILE_KEY_URL]
+            $settings[$siteId][$context][Hobis_Api_Apache_Solr::CONFIG_FILE_KEY_HOST],
+            $settings[$siteId][$context][Hobis_Api_Apache_Solr::CONFIG_FILE_KEY_PORT],
+            $settings[$siteId][$core][Hobis_Api_Apache_Solr::CONFIG_FILE_KEY_URL]
         );
 
         if (!$instance->ping()) {
@@ -77,9 +77,9 @@ class Hobis_Api_Apache_Solr_Service_Package
         //-----
         // Set defaults
         //-----
-        $context    = (Hobis_Api_Array_Package::populatedKey(Hobis_Api_Apache_Solr::CONFIG_FILE_KEY_CONTEXT, $configSettings[$siteId])) ? $configSettings[$siteId[Hobis_Api_Apache_Solr::CONFIG_FILE_KEY_VERSION]] : $configSettings[Hobis_Api_Apache_Solr::CONFIG_FILE_KEY_DEFAULT][Hobis_Api_Apache_Solr::CONFIG_FILE_KEY_VERSION];
-        $version    = (Hobis_Api_Array_Package::populatedKey(Hobis_Api_Apache_Solr::CONFIG_FILE_KEY_VERSION, $configSettings[$siteId])) ? $configSettings[$siteId[Hobis_Api_Apache_Solr::CONFIG_FILE_KEY_VERSION]] : $configSettings[Hobis_Api_Apache_Solr::CONFIG_FILE_KEY_DEFAULT][Hobis_Api_Apache_Solr::CONFIG_FILE_KEY_VERSION];
-        $writerType = (Hobis_Api_Array_Package::populatedKey(Hobis_Api_Apache_Solr::CONFIG_FILE_KEY_WRITER_TYPE, $configSettings[$siteId])) ? $configSettings[$siteId[Hobis_Api_Apache_Solr::CONFIG_FILE_KEY_WRITER_TYPE]] : $configSettings[Hobis_Api_Apache_Solr::CONFIG_FILE_KEY_DEFAULT][Hobis_Api_Apache_Solr::CONFIG_FILE_KEY_WRITER_TYPE];
+        $context    = (Hobis_Api_Array_Package::populatedKey(Hobis_Api_Apache_Solr::CONFIG_FILE_KEY_CONTEXT, $settings[$siteId])) ? $settings[$siteId[Hobis_Api_Apache_Solr::CONFIG_FILE_KEY_VERSION]] : $settings[Hobis_Api_Apache_Solr::CONFIG_FILE_KEY_DEFAULT][Hobis_Api_Apache_Solr::CONFIG_FILE_KEY_VERSION];
+        $version    = (Hobis_Api_Array_Package::populatedKey(Hobis_Api_Apache_Solr::CONFIG_FILE_KEY_VERSION, $settings[$siteId])) ? $settings[$siteId[Hobis_Api_Apache_Solr::CONFIG_FILE_KEY_VERSION]] : $settings[Hobis_Api_Apache_Solr::CONFIG_FILE_KEY_DEFAULT][Hobis_Api_Apache_Solr::CONFIG_FILE_KEY_VERSION];
+        $writerType = (Hobis_Api_Array_Package::populatedKey(Hobis_Api_Apache_Solr::CONFIG_FILE_KEY_WRITER_TYPE, $settings[$siteId])) ? $settings[$siteId[Hobis_Api_Apache_Solr::CONFIG_FILE_KEY_WRITER_TYPE]] : $settings[Hobis_Api_Apache_Solr::CONFIG_FILE_KEY_DEFAULT][Hobis_Api_Apache_Solr::CONFIG_FILE_KEY_WRITER_TYPE];
 
 		$instance->setCore($core);
         $instance->setContext($context);
@@ -97,8 +97,15 @@ class Hobis_Api_Apache_Solr_Service_Package
      *
      * @return string
      */
-    protected static function getSourceConfigFilename()
+    protected static function getConfig()
 	{
-		return realpath(dirname(__FILE__)) . '/../../../../../../etc/searchengine/solr/config.yml';
+        return Hobis_Api_Directory_Package::fromArray(
+            array(
+                Hobis_Api_Environment_Package::getAppConfigPath(),
+                'searchengine',
+                'solr',
+                'config.yml'
+            )
+        );
 	}
 }
