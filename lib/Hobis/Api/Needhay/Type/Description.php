@@ -8,12 +8,13 @@
 class Hobis_Api_Needhay_Type_Description
 {
     /**
-     * Tokens separating description data with the haystack file
+     * Tokens are used to separate various description attributes
      */
-    const TOKEN_TEXT        = 'tokenText';
-    const TOKEN_SOURCE_ID   = 'tokenSourceId';
-    const TOKEN_SOURCE_URL  = 'tokenSourceUrl';
-    const TOKEN_TIMESTAMP   = 'tokenTimestamp';
+    const TOKEN_ID          = 'Id';
+    const TOKEN_TEXT        = 'Text';
+    const TOKEN_SOURCE_ID   = 'SourceId';
+    const TOKEN_SOURCE_URL  = 'SourceUrl';
+    const TOKEN_TIMESTAMP   = 'Timestamp';
 
     // Filename of haystack asset
     const ASSET_NAME    = 'description.txt';
@@ -150,5 +151,21 @@ class Hobis_Api_Needhay_Type_Description
     public function getTimestamp()
     {
         return $this->timestamp;
+    }
+
+    /**
+     * Wrapper method for converting this object to an array
+     *
+     * @return array
+     */
+    public function toArray()
+    {
+        return array(
+            self::TOKEN_ID          => $this->getId(),
+            self::TOKEN_TEXT        => $this->getText(),
+            self::TOKEN_SOURCE_ID   => $this->getSourceId(),
+            self::TOKEN_SOURCE_URL  => $this->getSourceUrl(),
+            self::TOKEN_TIMESTAMP   => $this->getTimestamp()
+        );
     }
 }

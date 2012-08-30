@@ -54,7 +54,7 @@ class Hobis_Api_Needhay_Type_Description_Haystack extends Hobis_Api_Needhay_Hays
             // Descriptions only have one file, so flatten the array
             $assetContents = $assetContents[0];
 
-            // Convert array of scalars to array of objects
+            // Prep array of scalars for write
             foreach ($assetContents as $id => $descriptionAttribute) {
 
                 $description = new Hobis_Api_Needhay_Type_Description();
@@ -71,13 +71,15 @@ class Hobis_Api_Needhay_Type_Description_Haystack extends Hobis_Api_Needhay_Hays
                     $description->setSourceUrl($descriptionAttribute[Hobis_Api_Needhay_Type_Description::TOKEN_SOURCE_URL]);
                 }
 
-                $descriptions[] = $description;
+                $descriptions[] = $description->toArray();
             }
+
+            $assetContents = json_encode($descriptions);
 
             Hobis_Api_File_Package::write(
                 array(
                     'fileUri'   => $assetFileUri,
-                    'content'   => serialize($descriptions),
+                    'content'   => $assetContents,
                     'mode'      => Hobis_Api_File::MODE_WRITE,
                     'dirPerms'  => Hobis_Api_Filesystem::PERMS_RWX__RWS__R_X
                 )
@@ -105,6 +107,6 @@ class Hobis_Api_Needhay_Type_Description_Haystack extends Hobis_Api_Needhay_Hays
         }
         //-----
 
-        return unserialize(file_get_contents($assetFileUri));
+        return Hobis_Api_Needhay_Type_Description_Package::fromAnon(json_decode(file_get_contents($assetFileUri)));
     }
 }
