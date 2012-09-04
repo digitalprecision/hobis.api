@@ -35,6 +35,7 @@ class Hobis_Api_I18N_Package
             array(
                 Hobis_Api_Environment_Package::getAppConfigPath(),
                 'i18n',
+                'language',
                 'config.yml'
             )
         );
