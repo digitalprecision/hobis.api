@@ -48,7 +48,7 @@ class Hobis_Api_Apache_Solr_Service_Package
         // Validate required config values
         //-----
         if (!Hobis_Api_Array_Package::populated($settings)) {
-        	throw new Hobis_Api_Exception('Invalid $settings');
+        	throw new Hobis_Api_Exception(sprintf('Invalid $settings: %s', serialize($settings)));
         }
 
 		elseif (!Hobis_Api_Array_Package::populatedKey($siteId, $settings)) {
