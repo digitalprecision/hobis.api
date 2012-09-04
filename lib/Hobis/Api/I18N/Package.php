@@ -14,13 +14,13 @@ class Hobis_Api_I18N_Package
 
         if ((!Hobis_Api_Array_Package::populated($settings)) ||
             (!Hobis_Api_Array_Package::populatedKey('codes', $settings))) {
-            throw new Hobis_Api_Exception(sprinf('Invalid $settings: %s', serialize($settings)));
+            throw new Hobis_Api_Exception(sprintf('Invalid $settings: %s', serialize($settings)));
         }
 
         $languageCodes = $settings['codes'];
 
         if (!Hobis_Api_Array_Package::populatedKey($languageCode, $languageCodes)) {
-            throw new Hobis_Api_Exception('Invalid $languageCode');
+            throw new Hobis_Api_Exception(sprintf('Invalid $languageCode: %s', $languageCode));
         }
     }
 
