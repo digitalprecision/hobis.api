@@ -9,7 +9,7 @@ class Hobis_Api_Cache_Key_Package
      * @param array
      * @return string
      */
-    public static function generate($staticPrefix, array $dynamicSuffixes = array())
+    public static function generate($staticPrefix, array $dynamicAffixes = array())
     {
         // Validate
         if (!Hobis_Api_String_Package::populated($staticPrefix)) {
@@ -21,8 +21,8 @@ class Hobis_Api_Cache_Key_Package
         // NOTE: Order of entry in array is CRUCIAL
         //  If api call has elements in differing order than another api call it WILL
         //  result in a new key construct
-        if (Hobis_Api_Array_Package::populated($dynamicSuffixes)) {
-            $key .= Hobis_Api_Cache_Key::SEPARATOR . implode(Hobis_Api_Cache_Key::SEPARATOR, $dynamicSuffixes);
+        if (Hobis_Api_Array_Package::populated($dynamicAffixes)) {
+            $key .= Hobis_Api_Cache_Key::SEPARATOR . implode(Hobis_Api_Cache_Key::SEPARATOR, $dynamicAffixes);
         }
 
         $key = Hobis_Api_String_Package::tokenize(array('value' => $key, 'separator' => Hobis_Api_Cache_Key::SEPARATOR, 'allowedChars' => array(Hobis_Api_Cache_Key::SEPARATOR)));
