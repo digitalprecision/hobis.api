@@ -3,6 +3,29 @@
 class Hobis_Api_String_Package
 {
     /**
+     * Wrapper method for genering a unique hash
+     *  This was placed into string package because we are looking for a random string, with no regards for encryption
+     *
+     * @param int
+     * @return string
+     * @throws Hobis_Api_Exception
+     */
+    public static function getUniqueHash($bytes = 8)
+    {
+        //-----
+        // Validate
+        //-----
+        if (($bytes < 4) || ($bytes > 32)) {
+            throw new Hobis_Api_Exception(sprintf('Invalid $bytes: %d | Min Value: 4 | Max Value: 32', (int) $bytes));
+        } elseif (false === Hobis_Api_Environment_Package::isLinuxOs()) {
+            throw new Hobis_Api_Exception(sprintf('Unable to generate unique hash on non linux os'));
+        }
+        //-----
+
+        return bin2hex(file_get_contents('/dev/urandom', false, null, 0, (int) $bytes));
+    }
+
+    /**
      * Wrapper method for determining if string is alphanumeric
      *  Also has flexibility to overlook allowed chars
      *

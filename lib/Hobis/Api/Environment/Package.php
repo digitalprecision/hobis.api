@@ -89,4 +89,14 @@ class Hobis_Api_Environment_Package
     {
         return (php_sapi_name() === 'cli') ? true : false;
     }
+
+    /**
+     * Wrapper method for determing if we are on a linux os
+     *
+     * @return bool
+     */
+    public static function isLinuxOs()
+    {
+        return (stripos(php_uname(), 'linux') !== false) ? true : false;
+    }
 }
