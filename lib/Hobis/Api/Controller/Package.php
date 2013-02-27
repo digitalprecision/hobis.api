@@ -65,8 +65,16 @@ class Hobis_Api_Controller_Package
      */
     public static function issue503()
     {
-        header("HTTP/1.1 503 Service Temporarily Unavailable");
-        header("Status: 503 Service Temporarily Unavailable");
+        header('HTTP/1.1 503 Service Temporarily Unavailable');
+        header('Status: 503 Service Temporarily Unavailable');
+
+        exit;
+    }
+
+    public static function issue403()
+    {
+        header('HTTP/1.1 403 Forbidden');
+        header('Status: 403 Forbidden');
 
         exit;
     }

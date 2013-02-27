@@ -56,7 +56,7 @@ class Hobis_Api_Navigation_Package
 
         $html = null;
 
-        $html .= sprintf('<ul class="nav_primary_wrap floatClear">%s', PHP_EOL);
+        $html .= sprintf('<ul class="navParent">%s', PHP_EOL);
 
         foreach ($nav as $parent) {
 
@@ -64,13 +64,17 @@ class Hobis_Api_Navigation_Package
                 continue;
             }
 
-            $link = ((stripos($parent->getUri(), 'none') !== false) || (false === is_callable($linkFunction))) ? $parent->getLabel() : $linkFunction($parent->getLabel(), $parent->getUri());
+            if ((stripos($parent->getUri(), 'none') !== false) || (false === is_callable($linkFunction))) {
+                $link = sprintf('<a href="#">%s</a>', $parent->getLabel());
+            } else {
+                $linkFunction($parent->getLabel(), $parent->getUri());
+            }
 
-            $html .= sprintf('<li class="nav_parent"><span class="nav_header">%s</span>%s', $link, PHP_EOL);
+            $html .= sprintf('<li>%s%s', $link, PHP_EOL);
 
             if ($parent->hasPages()) {
 
-                $html .= sprintf('<ul class="nav_child_wrap">%s', PHP_EOL);
+                $html .= sprintf('<ul class="navChild">%s', PHP_EOL);
 
                 foreach ($parent->getPages() as $child) {
 
@@ -80,7 +84,7 @@ class Hobis_Api_Navigation_Package
 
                     $link = ((stripos($child->getUri(), 'none') !== false) || (false === is_callable($linkFunction))) ? $child->getLabel() : $linkFunction($child->getLabel(), $child->getUri());
 
-                    $html .= sprintf('<li class="nav_child">%s</li>%s', $link, PHP_EOL);
+                    $html .= sprintf('<li>%s</li>%s', $link, PHP_EOL);
                 }
 
                 $html .= sprintf('</ul>%s', PHP_EOL);
@@ -123,71 +127,71 @@ class Hobis_Api_Navigation_Package
     protected static function skipElement(Zend_Navigation_Page_Uri $element, $userIsAuthenticated, array $userCredentials)
     {
         $renderIf = (isset($element->renderIf)) ? $element->renderIf : array();
-        
+
         if (false === Hobis_Api_Array_Package::populated($renderIf)) {
             return false;
         }
-        
+
         //-----
         // Lilo (logged in/out)
         //-----
         if (true === Hobis_Api_Array_Package::populatedKey('lilo', $renderIf)) {
-            
+
             $setting = $renderIf['lilo'];
-            
+
             if ((('in' === $setting) && (false === $userIsAuthenticated)) ||
-                (('out' === $setting) && (true === $userIsAuthenticated))) {            
+                (('out' === $setting) && (true === $userIsAuthenticated))) {
                 return true;
             }
-            
+
             return false;
         }
         //-----
-        
+
         //-----
         // Group
         //-----
         if (true === Hobis_Api_Array_Package::populatedKey('group', $renderIf)) {
-            
+
             // Group membership assumes user must be authenticated
             if (false === $userIsAuthenticated) {
                 return true;
             }
-            
+
             $setting = $renderIf['group'];
-            
+
             $action     = Hobis_Api_Array_Package::populatedKey('action', $setting) ? $setting['action'] : 'allow';
             $groups     = Hobis_Api_Array_Package::populatedKey('groups', $setting) ? $setting['groups'] : array();
             $membership = Hobis_Api_Array_Package::populatedKey('membership', $setting) ? $setting['membership'] : 'atLeastOne';
-            
+
             if (count($groups) < 1) {
                 return false;
             }
-            
+
             if ('allow' === $action) {
-            
+
                 if ('atLeastOne' === $membership) {
-                    
+
                     if (count(array_intersect($groups, $userCredentials)) < 1) {
                         return true;
                     }
                 }
             }
-            
+
             elseif ('disallow' === $action) {
-                
+
                 if ('atLeastOne' === $membership) {
-                    
+
                     if (count(array_intersect($groups, $userCredentials)) > 0) {
                         return true;
                     }
                 }
             }
-            
+
             return false;
         }
         //-----
-        
+
         return false;
     }
 }
