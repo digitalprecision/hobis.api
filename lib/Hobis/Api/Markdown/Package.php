@@ -1,5 +1,9 @@
 <?php
 
+require_once 'Markdown.php';
+
+use Michelf\Markdown;
+
 class Hobis_Api_Markdown_Package
 {
     /**
@@ -16,8 +20,6 @@ class Hobis_Api_Markdown_Package
             throw new Hobis_Api_Exception(sprintf('Invalid $text: (%s)', $text));
         }
 
-        require_once 'markdown.php';
-
-        return Markdown($text);
+	return Markdown::defaultTransform($text);
     }
 }

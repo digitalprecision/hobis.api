@@ -47,7 +47,8 @@ class Hobis_Api_Bootstrap
                 'Apache_Solr_',
                 'Hobis_Api_',
                 'sfYaml',
-                'Cake_'
+                'Cake_',
+		'Mobile_',
             )
         );
     }
@@ -83,7 +84,8 @@ class Hobis_Api_Bootstrap
             $rootPath,
             $rootPath . DIRECTORY_SEPARATOR . 'SFComponent',
             $rootPath . DIRECTORY_SEPARATOR . 'PHPThumb',
-            $rootPath . DIRECTORY_SEPARATOR . 'PHPMarkdown'
+            $rootPath . DIRECTORY_SEPARATOR . 'PHPMarkdown',
+	    $rootPath . DIRECTORY_SEPARATOR . 'MobileDetect'
         );
 
         $existingIncludePaths = array_filter(explode(':', get_include_path()));
