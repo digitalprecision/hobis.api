@@ -31,9 +31,14 @@ class Hobis_Api_Log_Package
 	 * @param string $logPath
 	 * @return object
      */
-    public static function factory($logPath = Hobis_Api_Log::PATH_STD_OUT)
+    public static function factory($logName = Hobis_Api_Log::NAME_STD_OUT, $logPath = Hobis_Api_Log::PATH_STD_OUT)
     {
-	    $writer = new Zend_Log_Writer_Stream($logPath);
+        // If flagged as error log, we cannot use stream, instead just set to null so we still have access to accessors
+        if (Hobis_Api_Log::NAME_PHP_ERROR === $logName) {
+            $writer = new Hobis_Api_Log_Writer_Error;
+        } else {
+            $writer = new Zend_Log_Writer_Stream($logPath);
+        }
 
 	    $formatter = new Zend_Log_Formatter_Simple(Hobis_Api_Log::FORMAT . PHP_EOL);
 
@@ -71,8 +76,8 @@ class Hobis_Api_Log_Package
 	 */
 	public static function registerLogger($logName = Hobis_Api_Log::NAME_STD_OUT, $logUri = Hobis_Api_Log::URI_STD_OUT)
 	{
-		if (!Hobis_Api_Array_Package::populatedKey($logName, self::$logger)) {
-			self::$logger[$logName] = self::factory($logUri);
+		if (false === Hobis_Api_Array_Package::populatedKey($logName, self::$logger)) {
+			self::$logger[$logName] = self::factory($logName, $logUri);
 		}
 	}
 
@@ -82,7 +87,7 @@ class Hobis_Api_Log_Package
 	public static function toErrorLog()
 	{
 		self::registerLogger(Hobis_Api_Log::NAME_PHP_ERROR, Hobis_Api_Log::URI_PHP_ERROR);
-
+        
 		return self::getLogger(Hobis_Api_Log::NAME_PHP_ERROR);
 	}
 }

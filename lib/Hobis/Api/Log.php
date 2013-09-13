@@ -16,7 +16,7 @@ class Hobis_Api_Log extends Zend_Log
     const NAME_STD_OUT      = 'stdOut';
 
     // Paths to commonly used log files
-    const URI_PHP_ERROR    = '/var/log/php/oops.log';
+    const URI_PHP_ERROR    = 'syslog';
     const URI_STD_OUT      = 'php://output';
 
     // When we need to display debug messages in a production env
@@ -48,7 +48,7 @@ class Hobis_Api_Log extends Zend_Log
         //  Only display debug messages if override told us to
         if (($method === 'debug') &&
             (Hobis_Api_Environment_Package::getValue(Hobis_Api_Environment::VAR_LABEL_SERVICE) === Hobis_Api_Environment::PROD) &&
-            (!in_array(self::DEBUG_ON_PROD_OVERRIDE, $params))) {
+            (false === in_array(self::DEBUG_ON_PROD_OVERRIDE, $params))) {
             return;
         }
 
@@ -70,7 +70,7 @@ class Hobis_Api_Log extends Zend_Log
             else {
                 $message = $param;
             }
-
+           
             parent::__call($method, array($message));
         }
 	}
