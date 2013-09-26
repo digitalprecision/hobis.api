@@ -9,21 +9,6 @@ class Hobis_Api_Password_Package
      * 
      * Modified: Mike Purcell
      */
-
-    // These constants may be changed without breaking existing hashes.
-    const HASH_ALGORITHM        = 'sha512';
-    const HASH_SECTION_COUNT    = 4;
-    
-    const HASH_SECTION_INDEX_ALGORITHM          = 0;
-    const HASH_SECTION_INDEX_DERIVED_KEY        = 3;
-    const HASH_SECTION_INDEX_ITERATION_COUNT    = 1;
-    const HASH_SECTION_INDEX_SALT               = 2;    
-
-    const ITERATION_RANGE_LOW    = 2000;
-    const ITERATION_RANGE_HIGH   = 10000;
-
-    const LENGTH_BYTES_SALT          = 24;
-    const LENGTH_BYTES_DERIVED_KEY   = 24;
     
     /**
      * PBKDF2 key derivation function as defined by RSA's PKCS #5: https://www.ietf.org/rfc/rfc2898.txt
@@ -114,14 +99,14 @@ class Hobis_Api_Password_Package
             throw new Hobis_Api_Exception(sprintf('Invalid $password: %s', $password));
         }
 
-        $salt = base64_encode(mcrypt_create_iv(self::LENGTH_BYTES_SALT, MCRYPT_DEV_URANDOM));
+        $salt = base64_encode(mcrypt_create_iv(Hobis_Api_Password::LENGTH_BYTES_SALT, MCRYPT_DEV_URANDOM));
 
-        $iterationCount = mt_rand(self::ITERATION_RANGE_LOW, self::ITERATION_RANGE_HIGH);
+        $iterationCount = mt_rand(Hobis_Api_Password::ITERATION_RANGE_LOW, Hobis_Api_Password::ITERATION_RANGE_HIGH);
 
         $modifiers = array(
-            'algorithm'         => self::HASH_ALGORITHM,
+            'algorithm'         => Hobis_Api_Password::HASH_ALGORITHM,
             'iterationCount'    => $iterationCount,
-            'derivedKeyLength'  => self::LENGTH_BYTES_DERIVED_KEY,
+            'derivedKeyLength'  => Hobis_Api_Password::LENGTH_BYTES_DERIVED_KEY,
             'password'          => $password,
             'rawOutput'         => true,
             'salt'              => $salt
@@ -130,7 +115,7 @@ class Hobis_Api_Password_Package
         $derivedKey = base64_encode(self::generateDerivedKey($modifiers));
 
         // format: algorithm:iterations:salt:hash
-        return sprintf('%s:%d:%s:%s', self::HASH_ALGORITHM, $iterationCount, $salt, $derivedKey);
+        return sprintf('%s:%d:%s:%s', Hobis_Api_Password::HASH_ALGORITHM, $iterationCount, $salt, $derivedKey);
     }
     
     /**
@@ -186,19 +171,19 @@ class Hobis_Api_Password_Package
         
         $hashParams = explode(":", $hash);
         
-        if(count($hashParams) < self::HASH_SECTION_COUNT) {
+        if(count($hashParams) < Hobis_Api_Password::HASH_SECTION_COUNT) {
            throw new Hobis_Api_Exception(sprintf('Invalid $hashSections: %s', $hashParams));
         }
         
-        $derivedKey = base64_decode($hashParams[self::HASH_SECTION_INDEX_DERIVED_KEY]);
+        $derivedKey = base64_decode($hashParams[Hobis_Api_Password::HASH_SECTION_INDEX_DERIVED_KEY]);
         
         $modifiers = array(
-            'algorithm'         => $hashParams[self::HASH_SECTION_INDEX_ALGORITHM],
-            'iterationCount'    => (int)$hashParams[self::HASH_SECTION_INDEX_ITERATION_COUNT],
+            'algorithm'         => $hashParams[Hobis_Api_Password::HASH_SECTION_INDEX_ALGORITHM],
+            'iterationCount'    => (int)$hashParams[Hobis_Api_Password::HASH_SECTION_INDEX_ITERATION_COUNT],
             'derivedKeyLength'  => strlen($derivedKey),
             'password'          => $password,
             'rawOutput'         => true,
-            'salt'              => $hashParams[self::HASH_SECTION_INDEX_SALT]
+            'salt'              => $hashParams[Hobis_Api_Password::HASH_SECTION_INDEX_SALT]
         );
         
         return self::slowComp($derivedKey, self::generateDerivedKey($modifiers));

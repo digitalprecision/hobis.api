@@ -19,10 +19,8 @@ class Hobis_Api_Controller_Package
      */
     protected static $validIps = array(
         '127.0.0.1',
-        '173.58.49.41',
-        '192.168.0.254',
-        '207.7.104.10',
-        '74.100.45.90'
+        '10.0.63.254',
+        '207.7.104.10'
     );
 
     /**
@@ -44,19 +42,17 @@ class Hobis_Api_Controller_Package
         // Sites are behind proxy (nginx), so REMOTE_ADDR will always be nginx ip, we need to check diff globals
         foreach (self::$ipAddressGlobals as $ipAddressGlobal) {
 
-            if (!isset($serverGlobals[$ipAddressGlobal])) {
+            if (false === isset($serverGlobals[$ipAddressGlobal])) {
                 continue;
             }
 
-            if (in_array($serverGlobals[$ipAddressGlobal], self::$validIps)) {
+            if (true === in_array($serverGlobals[$ipAddressGlobal], self::$validIps)) {
 
-                $ipIsValid = true;
-
-                break;
+                return true;
             }
         }
-
-        return ($ipIsValid) ? true : false;
+        
+        return false;
     }
 
     /**

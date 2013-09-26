@@ -10,7 +10,7 @@ class Hobis_Api_String_Package
      * @return string
      * @throws Hobis_Api_Exception
      */
-    public static function getUniqueHash($bytes = 8)
+    public static function generateHash($bytes = 8)
     {
         //-----
         // Validate
