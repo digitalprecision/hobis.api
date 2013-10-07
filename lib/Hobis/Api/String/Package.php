@@ -11,18 +11,18 @@ class Hobis_Api_String_Package
      * @throws Hobis_Api_Exception
      */
     public static function generateHash($bytes = 8)
-    {
+    {   
         //-----
         // Validate
         //-----
-        if (($bytes < 4) || ($bytes > 32)) {
-            throw new Hobis_Api_Exception(sprintf('Invalid $bytes: %d | Min Value: 4 | Max Value: 32', (int) $bytes));
+        if (($bytes < 4) || ($bytes > 64)) {
+            throw new Hobis_Api_Exception(sprintf('Invalid $bytes: %d | Min Value: 4 | Max Value: 64', (int) $bytes));
         } elseif (false === Hobis_Api_Environment_Package::isLinuxOs()) {
             throw new Hobis_Api_Exception(sprintf('Unable to generate unique hash on non linux os'));
         }
         //-----
-
-        return bin2hex(file_get_contents('/dev/urandom', false, null, 0, (int) $bytes));
+        
+        return bin2hex(mcrypt_create_iv($bytes, MCRYPT_DEV_URANDOM));
     }
 
     /**
