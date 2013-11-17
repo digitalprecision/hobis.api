@@ -35,7 +35,7 @@ class Hobis_Api_Navigation_Package
         }
 
         $config = new Zend_Config($navSettings[$configAnchor]);
-
+        
         $nav = new Zend_Navigation($config);
 
         return $nav;
@@ -149,40 +149,42 @@ class Hobis_Api_Navigation_Package
         //-----
 
         //-----
-        // Group
+        // Perms
+        //  Perms are meant to be agnostic, they are dependent upon how the calling code sets them up
+        //      They can be either group ids, role ids, a combination thereof, all we care about is the id
         //-----
-        if (true === Hobis_Api_Array_Package::populatedKey('group', $renderIf)) {
+        if (true === Hobis_Api_Array_Package::populatedKey('perm', $renderIf)) {
 
-            // Group membership assumes user must be authenticated
+            // Perm assumes user must be authenticated
             if (false === $userIsAuthenticated) {
                 return true;
             }
 
-            $setting = $renderIf['group'];
+            $setting = $renderIf['perm'];
 
             $action     = Hobis_Api_Array_Package::populatedKey('action', $setting) ? $setting['action'] : 'allow';
-            $groups     = Hobis_Api_Array_Package::populatedKey('groups', $setting) ? $setting['groups'] : array();
+            $permIds    = Hobis_Api_Array_Package::populatedKey('permIds', $setting) ? $setting['permIds'] : array();
             $membership = Hobis_Api_Array_Package::populatedKey('membership', $setting) ? $setting['membership'] : 'atLeastOne';
 
-            if (count($groups) < 1) {
-                return false;
+            if (count($permIds) < 1) {
+                return true;
             }
 
             if ('allow' === $action) {
 
                 if ('atLeastOne' === $membership) {
 
-                    if (count(array_intersect($groups, $userCredentials)) < 1) {
+                    if (count(array_intersect($permIds, $userCredentials)) < 1) {
                         return true;
                     }
                 }
             }
 
-            elseif ('disallow' === $action) {
+            elseif ('deny' === $action) {
 
                 if ('atLeastOne' === $membership) {
 
-                    if (count(array_intersect($groups, $userCredentials)) > 0) {
+                    if (count(array_intersect($permIds, $userCredentials)) > 0) {
                         return true;
                     }
                 }
