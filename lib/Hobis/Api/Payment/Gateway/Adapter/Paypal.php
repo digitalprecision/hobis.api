@@ -60,7 +60,7 @@ class Hobis_Api_Payment_Gateway_Adapter_Paypal extends Hobis_Api_Payment_Gateway
      * @param object
      * @return object
      */
-    public function createVaultItem(Hobis_Api_Payment_Gateway_Vault_Item $item)
+    public function createVaultItem(Hobis_Api_Payment_Method $paymentMethod)
     {
         $this->getConnection()->sanitize();
         
@@ -70,13 +70,13 @@ class Hobis_Api_Payment_Gateway_Adapter_Paypal extends Hobis_Api_Payment_Gateway
         $this->getConnection()->setUri($this->getUriVault());
                 
         $payload = array(
-            'expire_month'  => $item->expireMonth,
-            'expire_year'   => $item->expireYear,
-            'first_name'    => $item->nameFirst,
-            'last_name'     => $item->nameLast,
-            'number'        => $item->number,
-            'payer_id'      => $item->userId,
-            'type'          => $item->type
+            'expire_month'  => $paymentMethod->getFundingInstrument()->getExpireMonth(),
+            'expire_year'   => $paymentMethod->getFundingInstrument()->getExpireYear(),
+            'first_name'    => $paymentMethod->getFundingInstrument()->getNameFirst(),
+            'last_name'     => $paymentMethod->getFundingInstrument()->getNameLast(),
+            'number'        => $paymentMethod->getFundingInstrument()->getNumber(),
+            'payer_id'      => $paymentMethod->getUserId(),
+            'type'          => $paymentMethod->getFundingInstrument()->getTypeToken()
         );
         
         $this->getConnection()->setRawData(json_encode($payload), Hobis_Api_Http_Client::ENC_URLENCODED);
@@ -92,7 +92,21 @@ class Hobis_Api_Payment_Gateway_Adapter_Paypal extends Hobis_Api_Payment_Gateway
 
         $response = $this->getConnection()->request(Hobis_Api_Http_Client::POST);
         
-        var_dump($response);
+        $body = json_decode($response->getBody());
+        
+        if ((false === isset($body->state)) || ('ok' !== $body->state)) {
+            throw new Hobis_Api_Exception(sprintf('Invalid response: %s', serialize($body)));
+        }
+        
+        $vaultItem = new Hobis_Api_Payment_Method_VaultItem;
+        
+        $vaultItem->setCreatedAt($body->create_time);
+        $vaultItem->setExpiredAt($body->valid_until);
+        $vaultItem->setId($body->id);
+        $vaultItem->setMask($body->number);
+        $vaultItem->setUpdatedAt($body->update_time);
+        
+        return $vaultItem;
     }
     
     /**

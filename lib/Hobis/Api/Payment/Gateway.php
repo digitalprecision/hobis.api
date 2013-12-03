@@ -38,8 +38,8 @@ class Hobis_Api_Payment_Gateway
      * 
      * @param object
      */
-    public function createVaultItem(Hobis_Api_Payment_Gateway_Vault_Item $item)
+    public function createVaultItem(Hobis_Api_Payment_Method $paymentMethod)
     {
-        $this->getAdapter()->createVaultItem($item);
+        return $this->getAdapter()->createVaultItem($paymentMethod);
     }
 }

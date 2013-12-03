@@ -39,7 +39,7 @@ abstract class Hobis_Api_Payment_Gateway_Adapter
     /**
      * Every child class must have ability to create vault item
      */
-    abstract public function createVaultItem(Hobis_Api_Payment_Gateway_Vault_Item $item);
+    abstract public function createVaultItem(Hobis_Api_Payment_Method $paymentMethod);
     
     /**
      * Setter for api key
