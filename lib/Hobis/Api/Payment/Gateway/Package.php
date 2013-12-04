@@ -3,33 +3,72 @@
 class Hobis_Api_Payment_Gateway_Package
 {
     /**
+     * Container for prepared gateway objects
+     *
+     * @var array
+     */
+    protected static $gateways;
+    
+    /**
      * Factory method for returning payment gateway objects
      * 
      * @param array
      * @return object
      */
     public static function factory(array $options)
-    {
-        // Static config for building purposes, will be moved to yaml config
-        $config['dev']['apiKey'] = 'AbOtzhCLiF9be6fuPxWESk5jiFoMsI3t5AC5z9hfSFA6nUH7m8UutAOR01JE:EMRu2BB8PQacceugYjCFeNWxgVD3SJunCqaa0fOZ8qBc4-7DTvkyP3MlDdrX';
+    {   
+        //-----
+        // Validate options
+        if (false === Hobis_Api_Array_Package::populatedKey('mode', $options)) {
+            throw new Hobis_Api_Exception(sprintf('Invalid mode: %s', serialize($options)));
+        } elseif (false === Hobis_Api_Array_Package::populatedKey('adapter', $options)) {
+            throw new Hobis_Api_Exception(sprintf('Invalid adapter: %s', serialize($options)));
+        }
+        //-----
         
-        $mode = $options['mode'];
+        // Localize
+        $adapter    = $options['adapter'];
+        $mode       = $options['mode'];
         
-        $gate = new Hobis_Api_Payment_Gateway;
+        // Construct container key
+        $containerKey = md5(sprintf('%s_%s', $adapter, $mode));
+        
+        // Attempt to use singleton
+        if (true === Hobis_Api_Array_Package::populatedKey($containerKey, self::$gateways)) {
+            return self::$gateways[$containerKey];
+        }
+        
+        $gateway    = new Hobis_Api_Payment_Gateway;
+        $settings   = sfYaml::load(self::getConfig());        
+        
+        //-----
+        // Validate config
+        //-----
+        if (false === Hobis_Api_Array_Package::populatedKey($mode, $settings)) {
+            throw new Hobis_Api_Exception(sprintf('Invalid mode: %s', serialize($settings)));
+        } elseif (false === Hobis_Api_Array_Package::populatedKey('apiKey', $settings[$mode])) {
+            throw new Hobis_Api_Exception(sprintf('Invalid apiKey: %s', serialize($settings)));
+        }
+        //-----
     
-        switch ($options['adapter']) {
+        switch ($adapter) {
             
             case Hobis_Api_Payment_Gateway_Adapter::TYPE_PAYPAL:
                 
-                $gate->setAdapter(new Hobis_Api_Payment_Gateway_Adapter_Paypal);
+                $gateway->setAdapter(new Hobis_Api_Payment_Gateway_Adapter_Paypal);
                 
                 break;
+            
+            default:
+                throw new Hobis_Api_Exception(sprintf('Invalid adapter: %s', $adapter));
         }
         
-        $gate->getAdapter()->setMode($mode);
-        $gate->getAdapter()->setApiKey($config[$mode]['apiKey']);
+        $gateway->getAdapter()->setMode($mode);
+        $gateway->getAdapter()->setApiKey($settings[$mode]['apiKey']);
         
-        return $gate;
+        self::$gateways[$containerKey] = $gateway;
+        
+        return $gateway;
     }
     
     /**
@@ -42,8 +81,8 @@ class Hobis_Api_Payment_Gateway_Package
         return Hobis_Api_Directory_Package::fromArray(
             array(
                 Hobis_Api_Environment_Package::getAppConfigPath(),
-                'cache',
-                'paymentGateway.yml'
+                'paymentGateway',
+                'config.yml'
             )
         );
     }
