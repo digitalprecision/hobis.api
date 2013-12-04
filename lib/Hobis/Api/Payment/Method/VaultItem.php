@@ -11,6 +11,14 @@ class Hobis_Api_Payment_Method_VaultItem
     protected $createdAt;
     
     /**
+     * Container for deleted timestamp
+     *  Time vault item was deleted from vault
+     * 
+     * @var int
+     */
+    protected $deletedAt;
+    
+    /**
      * Container for expiredAt timestamp
      *  Time vault item expires from vault
      * 
@@ -50,6 +58,16 @@ class Hobis_Api_Payment_Method_VaultItem
     public function setCreatedAt($createdAt)
     {
         $this->createdAt = $createdAt;
+    }
+    
+    /**
+     * Setter for deleted at
+     * 
+     * @param int
+     */
+    public function setDeletedAt($deletedAt)
+    {
+        $this->deletedAt = $deletedAt;
     }
     
     /**
@@ -100,6 +118,16 @@ class Hobis_Api_Payment_Method_VaultItem
     public function getCreatedAt()
     {
         return $this->createdAt;
+    }
+    
+    /**
+     * Getter for deleted at
+     * 
+     * @return int
+     */
+    public function getDeletedAt()
+    {
+        return $this->deletedAt;
     }
     
     /**

@@ -2,10 +2,10 @@
 
 abstract class Hobis_Api_Payment_Gateway_Adapter
 {   
-    const TYPE_PAYPAL = 'paypal';
+    const ID_TYPE_PAYPAL = 1;
     
-    const MODE_DEV  = 'dev';
-    const MODE_PROD = 'prod';
+    const ID_MODE_DEV   = 1;
+    const ID_MODE_PROD  = 2;
     
     /**
      * Container for api key
@@ -24,12 +24,12 @@ abstract class Hobis_Api_Payment_Gateway_Adapter
     protected static $connection = array();
     
     /**
-     * Container for mode
+     * Container for mode id
      *  Allows for switching between dev, prod, etc
      * 
      * @var string
      */
-    protected $mode;
+    protected $modeId;
     
     /**
      * Every child class must have ability to return a connection object
@@ -52,13 +52,13 @@ abstract class Hobis_Api_Payment_Gateway_Adapter
     }
     
     /**
-     * Setter for mode
+     * Setter for modeId
      * 
-     * @param string
+     * @param int
      */
-    public function setMode($mode)
+    public function setModeId($modeId)
     {
-        $this->mode = $mode;
+        $this->modeId = $modeId;
     }
     
     /**
@@ -72,13 +72,13 @@ abstract class Hobis_Api_Payment_Gateway_Adapter
     }
     
     /**
-     * Getter for mode
+     * Getter for modeId
      * 
      * @return string
      */
-    public function getMode()
+    public function getModeId()
     {
-        return $this->mode;
+        return $this->modeId;
     }
     
     /**

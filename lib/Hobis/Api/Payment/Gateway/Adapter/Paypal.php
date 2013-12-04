@@ -9,9 +9,9 @@ class Hobis_Api_Payment_Gateway_Adapter_Paypal extends Hobis_Api_Payment_Gateway
      */
     protected function getUriPayment()
     {
-        switch ($this->getMode()) {
+        switch ($this->getModeId()) {
             
-            case parent::MODE_PROD:
+            case parent::ID_MODE_PROD:
                 return 'https://api.sandbox.paypal.com/v1/payments/payment';
                 
             default:
@@ -26,9 +26,9 @@ class Hobis_Api_Payment_Gateway_Adapter_Paypal extends Hobis_Api_Payment_Gateway
      */
     protected function getUriToken()
     {
-        switch ($this->getMode()) {
+        switch ($this->getModeId()) {
             
-            case parent::MODE_PROD:
+            case parent::ID_MODE_PROD:
                 return 'https://api.sandbox.paypal.com/v1/oauth2/token';
                 
             default:
@@ -43,9 +43,9 @@ class Hobis_Api_Payment_Gateway_Adapter_Paypal extends Hobis_Api_Payment_Gateway
      */
     protected function getUriVault()
     {
-        switch ($this->getMode()) {
+        switch ($this->getModeId()) {
             
-            case parent::MODE_PROD:
+            case parent::ID_MODE_PROD:
                 return 'https://api.sandbox.paypal.com/v1/vault/credit-card';
                 
             default:
@@ -100,11 +100,11 @@ class Hobis_Api_Payment_Gateway_Adapter_Paypal extends Hobis_Api_Payment_Gateway
         
         $vaultItem = new Hobis_Api_Payment_Method_VaultItem;
         
-        $vaultItem->setCreatedAt($body->create_time);
-        $vaultItem->setExpiredAt($body->valid_until);
+        $vaultItem->setCreatedAt(Hobis_Api_Date_Package::stringToTime($body->create_time));
+        $vaultItem->setExpiredAt(Hobis_Api_Date_Package::stringToTime($body->valid_until));
         $vaultItem->setId($body->id);
         $vaultItem->setMask($body->number);
-        $vaultItem->setUpdatedAt($body->update_time);
+        $vaultItem->setUpdatedAt(Hobis_Api_Date_Package::stringToTime($body->update_time));
         
         return $vaultItem;
     }

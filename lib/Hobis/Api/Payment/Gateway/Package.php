@@ -19,19 +19,19 @@ class Hobis_Api_Payment_Gateway_Package
     {   
         //-----
         // Validate options
-        if (false === Hobis_Api_Array_Package::populatedKey('mode', $options)) {
-            throw new Hobis_Api_Exception(sprintf('Invalid mode: %s', serialize($options)));
-        } elseif (false === Hobis_Api_Array_Package::populatedKey('adapter', $options)) {
-            throw new Hobis_Api_Exception(sprintf('Invalid adapter: %s', serialize($options)));
+        if (false === Hobis_Api_Array_Package::populatedKey('modeId', $options)) {
+            throw new Hobis_Api_Exception(sprintf('Invalid modeId: %s', serialize($options)));
+        } elseif (false === Hobis_Api_Array_Package::populatedKey('adapterTypeId', $options)) {
+            throw new Hobis_Api_Exception(sprintf('Invalid adapterTypeId: %s', serialize($options)));
         }
         //-----
         
         // Localize
-        $adapter    = $options['adapter'];
-        $mode       = $options['mode'];
+        $adapterTypeId  = $options['adapterTypeId'];
+        $modeId         = $options['modeId'];
         
         // Construct container key
-        $containerKey = md5(sprintf('%s_%s', $adapter, $mode));
+        $containerKey = md5(sprintf('%s_%s', $adapterTypeId, $modeId));
         
         // Attempt to use singleton
         if (true === Hobis_Api_Array_Package::populatedKey($containerKey, self::$gateways)) {
@@ -44,16 +44,16 @@ class Hobis_Api_Payment_Gateway_Package
         //-----
         // Validate config
         //-----
-        if (false === Hobis_Api_Array_Package::populatedKey($mode, $settings)) {
-            throw new Hobis_Api_Exception(sprintf('Invalid mode: %s', serialize($settings)));
-        } elseif (false === Hobis_Api_Array_Package::populatedKey('apiKey', $settings[$mode])) {
+        if (false === Hobis_Api_Array_Package::populatedKey($modeId, $settings)) {
+            throw new Hobis_Api_Exception(sprintf('Invalid modeId: %s', serialize($settings)));
+        } elseif (false === Hobis_Api_Array_Package::populatedKey('apiKey', $settings[$modeId])) {
             throw new Hobis_Api_Exception(sprintf('Invalid apiKey: %s', serialize($settings)));
         }
         //-----
     
-        switch ($adapter) {
+        switch ($adapterTypeId) {
             
-            case Hobis_Api_Payment_Gateway_Adapter::TYPE_PAYPAL:
+            case Hobis_Api_Payment_Gateway_Adapter::ID_TYPE_PAYPAL:
                 
                 $gateway->setAdapter(new Hobis_Api_Payment_Gateway_Adapter_Paypal);
                 
@@ -63,8 +63,8 @@ class Hobis_Api_Payment_Gateway_Package
                 throw new Hobis_Api_Exception(sprintf('Invalid adapter: %s', $adapter));
         }
         
-        $gateway->getAdapter()->setMode($mode);
-        $gateway->getAdapter()->setApiKey($settings[$mode]['apiKey']);
+        $gateway->getAdapter()->setModeId($modeId);
+        $gateway->getAdapter()->setApiKey($settings[$modeId]['apiKey']);
         
         self::$gateways[$containerKey] = $gateway;
         
