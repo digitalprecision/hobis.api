@@ -2,6 +2,8 @@
 
 class Hobis_Api_Payment_Gateway_Adapter_Paypal extends Hobis_Api_Payment_Gateway_Adapter
 {   
+    const ID_CODE_REST_RESPONSE_SUCCESS = '204';
+    
     /**
      * Wrapper method for returning payment uri
      * 
@@ -55,12 +57,11 @@ class Hobis_Api_Payment_Gateway_Adapter_Paypal extends Hobis_Api_Payment_Gateway
     
     /**
      * Wrapper method for creating a vault item
-     *  We will hydrate the passed in object with response data
      * 
      * @param object
      * @return object
      */
-    public function createVaultItem(Hobis_Api_Payment_Method $paymentMethod)
+    public function createVaultItem(Hobis_Api_Payment_Method_Transport $paymentMethodTransport)
     {
         $this->getConnection()->sanitize();
         
@@ -70,13 +71,13 @@ class Hobis_Api_Payment_Gateway_Adapter_Paypal extends Hobis_Api_Payment_Gateway
         $this->getConnection()->setUri($this->getUriVault());
                 
         $payload = array(
-            'expire_month'  => $paymentMethod->getFundingInstrument()->getExpireMonth(),
-            'expire_year'   => $paymentMethod->getFundingInstrument()->getExpireYear(),
-            'first_name'    => $paymentMethod->getFundingInstrument()->getNameFirst(),
-            'last_name'     => $paymentMethod->getFundingInstrument()->getNameLast(),
-            'number'        => $paymentMethod->getFundingInstrument()->getNumber(),
-            'payer_id'      => $paymentMethod->getUserId(),
-            'type'          => $paymentMethod->getFundingInstrument()->getTypeToken()
+            'expire_month'  => $paymentMethodTransport->getFundingInstrument()->getExpireMonth(),
+            'expire_year'   => $paymentMethodTransport->getFundingInstrument()->getExpireYear(),
+            'first_name'    => $paymentMethodTransport->getFundingInstrument()->getNameFirst(),
+            'last_name'     => $paymentMethodTransport->getFundingInstrument()->getNameLast(),
+            'number'        => $paymentMethodTransport->getFundingInstrument()->getNumber(),
+            'payer_id'      => $paymentMethodTransport->getUserId(),
+            'type'          => $paymentMethodTransport->getFundingInstrument()->getTypeToken()
         );
         
         $this->getConnection()->setRawData(json_encode($payload), Hobis_Api_Http_Client::ENC_URLENCODED);
@@ -107,6 +108,37 @@ class Hobis_Api_Payment_Gateway_Adapter_Paypal extends Hobis_Api_Payment_Gateway
         $vaultItem->setUpdatedAt(Hobis_Api_Date_Package::stringToTime($body->update_time));
         
         return $vaultItem;
+    }
+    
+    /**
+     * Wrapper method for deleting a vault item
+     * 
+     * @param object
+     * @throws Exception
+     */
+    public function deleteVaultItem(Hobis_Api_Payment_Method_Transport $paymentMethodTransport)
+    {
+        $this->getConnection()->sanitize();
+        
+        // Authorization:Bearer is not a standard http header, so we have to disable strict header checking
+        $this->getConnection()->setConfig(array('strict' => false));
+
+        $this->getConnection()->setUri(sprintf('%s/%s', $this->getUriVault(), $paymentMethodTransport->getVaultItem()->getId()));
+        
+        $this->getConnection()->setHeaders(
+            array(
+                'Accept'            => 'application/json',
+                'Accept-Language'   => 'en_US',
+                'Content-Type'      => 'application/json',
+                'Authorization'     => sprintf('Bearer %s', $this->getConnection()->getAccessToken())
+            )
+        );
+        
+        $response = $this->getConnection()->request(Hobis_Api_Http_Client::DELETE);
+        
+        if (self::ID_CODE_REST_RESPONSE_SUCCESS !== $response->getStatus()) {
+            throw new Hobis_Api_Exception(sprintf('Invalid status: %s', serialize($response->getStatus())));
+        }
     }
     
     /**

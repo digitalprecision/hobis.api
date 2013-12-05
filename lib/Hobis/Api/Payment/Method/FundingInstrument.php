@@ -2,8 +2,8 @@
 
 class Hobis_Api_Payment_Method_FundingInstrument
 {
-    const TYPE_ID_CARD_VISA        = 1;
-    const TYPE_ID_CARD_MASTERCARD  = 2;
+    const ID_TYPE_VISA          = 1;
+    const ID_TYPE_MASTERCARD    = 2;
     
     /**
      * Container for expire month
@@ -179,10 +179,10 @@ class Hobis_Api_Payment_Method_FundingInstrument
     {
         switch ($this->getTypeId()) {
             
-            case self::TYPE_ID_CARD_VISA:
+            case self::ID_TYPE_VISA:
                 return 'visa';
                 
-            case self::TYPE_ID_CARD_MASTERCARD:
+            case self::ID_TYPE_MASTERCARD:
                 return 'mastercard';
                 
             default:

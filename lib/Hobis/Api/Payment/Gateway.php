@@ -33,13 +33,23 @@ class Hobis_Api_Payment_Gateway
     
     /**
      * Wrapper method for creating a vault item
-     *  A vault item is a payment method stored with payment gateway provider, and is usually
-     *      associated by a unique id returned when successfully stored
      * 
      * @param object
+     * @return object
      */
-    public function createVaultItem(Hobis_Api_Payment_Method $paymentMethod)
+    public function createVaultItem(Hobis_Api_Payment_Method_Transport $paymentMethodTransport)
     {
-        return $this->getAdapter()->createVaultItem($paymentMethod);
+        return $this->getAdapter()->createVaultItem($paymentMethodTransport);
+    }
+    
+    /**
+     * Wrapper method for deleting a vault item
+     * 
+     * @param object
+     * @return object
+     */
+    public function deleteVaultItem(Hobis_Api_Payment_Method_Transport $paymentMethodTransport)
+    {
+        return $this->getAdapter()->deleteVaultItem($paymentMethodTransport);
     }
 }
