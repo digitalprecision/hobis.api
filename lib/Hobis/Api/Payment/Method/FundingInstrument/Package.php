@@ -17,8 +17,8 @@ class Hobis_Api_Payment_Method_FundingInstrument_Package
     public static function getTypeTokens()
     {
         return array(
-            Hobis_Api_Payment_Method_FundingInstrument::TYPE_ID_CARD_VISA       => 'visa',
-            Hobis_Api_Payment_Method_FundingInstrument::TYPE_ID_CARD_MASTERCARD => 'mastercard',
+            Hobis_Api_Payment_Method_FundingInstrument::ID_TYPE_VISA       => 'visa',
+            Hobis_Api_Payment_Method_FundingInstrument::ID_TYPE_MASTERCARD => 'mastercard',
         );
     }
     

@@ -2,7 +2,7 @@
 
 class Hobis_Api_Payment_Gateway_Adapter_Paypal extends Hobis_Api_Payment_Gateway_Adapter
 {   
-    const ID_CODE_REST_RESPONSE_SUCCESS = '204';
+    const ID_CODE_REST_RESPONSE_SUCCESS = 204;
     
     /**
      * Wrapper method for returning payment uri
@@ -136,7 +136,7 @@ class Hobis_Api_Payment_Gateway_Adapter_Paypal extends Hobis_Api_Payment_Gateway
         
         $response = $this->getConnection()->request(Hobis_Api_Http_Client::DELETE);
         
-        if (self::ID_CODE_REST_RESPONSE_SUCCESS !== $response->getStatus()) {
+        if (self::ID_CODE_REST_RESPONSE_SUCCESS !== (int) $response->getStatus()) {
             throw new Hobis_Api_Exception(sprintf('Invalid status: %s', serialize($response->getStatus())));
         }
     }
