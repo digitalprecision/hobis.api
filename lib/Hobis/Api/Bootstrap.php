@@ -45,10 +45,11 @@ class Hobis_Api_Bootstrap
         $autoloader->registerNamespace(
             array(
                 'Apache_Solr_',
-                'Hobis_Api_',
-                'sfYaml',
                 'Cake_',
-		'Mobile_',
+                'Hobis_Api_',
+                'Horde_',
+                'Mobile_',
+                'sfYaml'
             )
         );
     }
