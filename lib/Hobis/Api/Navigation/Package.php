@@ -10,7 +10,7 @@ class Hobis_Api_Navigation_Package
      * @return \Zend_Navigation
      * @throws Hobis_Api_Exception
      */
-    public static function factory(array $uriParts, $configAnchor)
+    public static function factory(array $uriParts, $configAnchor = 'nav')
     {
         //-----
         // Validate
@@ -25,95 +25,25 @@ class Hobis_Api_Navigation_Package
         array_unshift($uriParts, Hobis_Api_Environment_Package::getAppConfigPath());
 
         $fileUri = Hobis_Api_Directory_Package::fromArray($uriParts);
-
+		
         // Note: we have to load yml natively through sfYaml, if we try to use Zend_Config_Yaml it won't
         //  parse embedded php correctly due to file_get_contents call (should be ob_*)
-        $navSettings = sfYaml::load($fileUri);
-
-        if (false === Hobis_Api_Array_Package::populatedKey($configAnchor, $navSettings)) {
-            throw new Hobis_Api_Exception(sprintf('Invalid $configAnchor: %s', serialize($navSettings)));
+        $settings = sfYaml::load($fileUri);
+		
+        if (false === Hobis_Api_Array_Package::populatedKey($configAnchor, $settings)) {
+            throw new Hobis_Api_Exception(sprintf('Invalid $configAnchor: %s', serialize($settings)));
         }
+		
+		//var_dump($settings); exit;
 
-        $config = new Zend_Config($navSettings[$configAnchor]);
-        
-        $nav = new Zend_Navigation($config);
+        $config = new Zend_Config($settings[$configAnchor]);
+		
+        $nav = new Hobis_Api_Navigation($config);
+		
+		$nav->setContainerType($settings['containerType']);
+        $nav->setBrandSettings($settings['brand']);
 
         return $nav;
-    }
-
-    /**
-     * Wrapper method for converting a navigation object to html
-     *
-     * @param object
-     * @param array
-     * @return type
-     */
-    public static function htmlify(Zend_Navigation $nav, array $options)
-    {
-        $linkFunction           = Hobis_Api_Array_Package::populatedKey('linkFunction', $options) ? $options['linkFunction'] : null;
-        $userIsAuthenticated    = Hobis_Api_Array_Package::populatedKey('userIsAuthenticated', $options) ? (bool) $options['userIsAuthenticated'] : false;
-        $userCredentials        = Hobis_Api_Array_Package::populatedKey('userCredentials', $options) ? $options['userCredentials'] : array();
-
-        $html = null;
-
-        $html .= sprintf('<ul class="navParent">%s', PHP_EOL);
-
-        foreach ($nav as $parent) {
-
-            if (true === self::skipElement($parent, $userIsAuthenticated, $userCredentials)) {
-                continue;
-            }
-
-            if ((stripos($parent->getUri(), 'none') !== false) || (false === is_callable($linkFunction))) {
-                $link = sprintf('<a href="#">%s</a>', $parent->getLabel());
-            } else {
-                $linkFunction($parent->getLabel(), $parent->getUri());
-            }
-
-            $html .= sprintf('<li>%s%s', $link, PHP_EOL);
-
-            if ($parent->hasPages()) {
-
-                $html .= sprintf('<ul class="navChild">%s', PHP_EOL);
-
-                foreach ($parent->getPages() as $child) {
-
-                    if (true === self::skipElement($child, $userIsAuthenticated, $userCredentials)) {
-                        continue;
-                    }
-
-                    $link = ((stripos($child->getUri(), 'none') !== false) || (false === is_callable($linkFunction))) ? $child->getLabel() : $linkFunction($child->getLabel(), $child->getUri());
-
-                    $html .= sprintf('<li>%s</li>%s', $link, PHP_EOL);
-                }
-
-                $html .= sprintf('</ul>%s', PHP_EOL);
-            }
-
-            $html .= sprintf('</li>%s', PHP_EOL);
-        }
-
-        $html .= sprintf('</ul>%s', PHP_EOL);
-
-        return $html;
-    }
-
-    /**
-     * Wrapper method for rendering a menu based on options
-     *
-     * @param array $options
-     * @return type
-     */
-    public static function renderMenu(array $options)
-    {
-        // No need to validate here, lower calls will do that for us
-
-        $configAnchor   = Hobis_Api_Array_Package::populatedKey('configAnchor', $options) ? $options['configAnchor'] : 'nav';
-        $uriParts       = Hobis_Api_Array_Package::populatedKey('uriParts', $options) ? $options['uriParts'] : array();
-
-        $nav = self::factory($uriParts, $configAnchor);
-
-        return self::htmlify($nav, $options);
     }
 
     /**
@@ -124,7 +54,7 @@ class Hobis_Api_Navigation_Package
      * @param array
      * @return boolean
      */
-    protected static function skipElement(Zend_Navigation_Page_Uri $element, $userIsAuthenticated, array $userCredentials)
+    public static function skipElement(Zend_Navigation_Page_Uri $element, $userIsAuthenticated, array $userCredentials)
     {
         $renderIf = (isset($element->renderIf)) ? $element->renderIf : array();
 
