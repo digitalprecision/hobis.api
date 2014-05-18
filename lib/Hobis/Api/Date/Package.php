@@ -10,13 +10,8 @@ class Hobis_Api_Date_Package
      * @return int
      * @throws Hobis_Api_Exception
      */
-    public static function stringToTime($string, $timeZone = 'UTC')
-    {
-        // Validate
-        if (false === Hobis_Api_String_Package::populated($timeZone)) {
-            throw new Hobis_Api_Exception(sprintf('Invalid timeZoneId: %s', serialize($timeZone)));
-        }
-        
+    public static function stringToTime($string, $timeZone = Hobis_Api_Time_Zone::TOKEN_SHORT_UTC)
+    {   
         $date = new DateTime($string, new DateTimeZone($timeZone));
         
         return $date->getTimestamp();
