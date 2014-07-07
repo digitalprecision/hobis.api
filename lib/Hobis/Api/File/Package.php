@@ -2,6 +2,19 @@
 
 class Hobis_Api_File_Package
 {
+	/**
+	 * Container for tracking files for which we wanted a mod time
+	 * 	Rather blow up memory than increase I/O 
+	 * 
+	 * @var array
+	 */
+	protected static $fileModTimes;
+	
+	/**
+	 * Container for valid write modes
+	 * 
+	 * @var array
+	 */
     public static $validWriteModes = array(
     	Hobis_Api_File::MODE_APPEND,
         Hobis_Api_File::MODE_CREATE,
@@ -95,6 +108,27 @@ class Hobis_Api_File_Package
 
     	return pathinfo($fileUri, PATHINFO_EXTENSION);
     }
+	
+	/**
+	 * Wrapper method for getting mod time of given file
+	 * 
+	 * @param string
+	 * @return string
+	 */
+	public static function getModTime($fileUri)
+	{
+		// Validate
+    	if (false === self::isFile($fileUri)) {
+            throw new Hobis_Api_Exception(sprintf('Invalid $fileUri: %s', $fileUri));
+    	}
+		
+		// Store file in singleton so we can cut down on io for multiple requests of the same file
+		if ((false === isset(self::$fileModTimes)) || (false === Hobis_Api_Array_Package::populatedKey($fileUri, self::$fileModTimes))) {
+			self::$fileModTimes[$fileUri] = filemtime($fileUri);
+		}
+		
+		return self::$fileModTimes[$fileUri];
+	}
 
     /**
      * Will return filename of given fileUri
