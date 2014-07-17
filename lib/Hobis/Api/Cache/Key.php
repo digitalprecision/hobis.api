@@ -60,6 +60,16 @@ class Hobis_Api_Cache_Key
     {
         $this->value = $value;
     }
+	
+	/**
+	 * Wrapper getter (EXPLICIT) to lessen confusion in calling code
+	 * 
+	 * @return string
+	 */
+	public function toString()
+	{
+		return $this->getKey();
+	}
 
     /**
      * Getter for expiry
