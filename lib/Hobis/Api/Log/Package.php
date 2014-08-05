@@ -31,7 +31,7 @@ class Hobis_Api_Log_Package
 	 * @param string $logPath
 	 * @return object
      */
-    public static function factory($logName = Hobis_Api_Log::NAME_STD_OUT, $logPath = Hobis_Api_Log::PATH_STD_OUT)
+    public static function factory($logName = Hobis_Api_Log::NAME_STD_OUT, $logPath = Hobis_Api_Log::URI_STD_OUT)
     {
         // If flagged as error log, we cannot use stream, instead just set to null so we still have access to accessors
         if (Hobis_Api_Log::NAME_PHP_ERROR === $logName) {
