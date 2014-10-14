@@ -64,84 +64,23 @@ class Hobis_Api_Cache_Package
         }
 
         // Localize
-        $port       = $settings['port'];
+        $port       = (int) $settings['port'];
         $servers    = $settings[$type]['servers'];
-
-		// So there is a real flaw in using the memcached api, as it assumes that all memcached servers will be up, forever
-		//	Obviously fragile, I tried a number of various settings to affect the underlying libmemcached mechanisms of self
-		//	healing a cache pool with broken nodes
-		//	Cache is meant to be transitory, which is fine, but I prefer caching sessions rather than storing in a more costly store such as RDMBS
-		//	And with a true cache pool, this is a viable solution, as there should be at least 2 nodes participating in the pool to offer some
-		//	fault tolerance
-		//	Point is, if a pool node goes down, and the key is unattainable, no problem, handle the miss and store it on another server
-		//	Not complicated right?
-		//	The test cache object allows us to add all the pool node, then derive whether the node is available or not via getStats() and checking
-		//	if pid > 0
-		//	Then, from the servers determined to be responding, we add them to the real cache object, which is what we return out of this factory
-		$cacheReal = new Hobis_Api_Cache;
-        $cacheTest = new Hobis_Api_Cache;
 		
-		// If there are options present, lets set them
-		if (true === Hobis_Api_Array_Package::populatedKey('options', $settings[$type])) {
+		$servers = array_map('trim', $servers);
+		
+		$cache = new Hobis_Api_Cache;
+		
+		foreach ($servers as $server) {
 			
-			$options = array();
-			
-			foreach ($settings[$type]['options'] as $optionPair) {
+			$serversToAdd[] = array($server, $port);
+		}				
 				
-				list($key, $value) = array_map('trim', explode(':', $optionPair));
-				
-				if (true === is_numeric($value)) {
-					$value = (int) $value;
-				}
-				
-				$cacheReal->setOption($key, $value);
-			}
-		}
+		$cache->addServers($serversToAdd);
+		
+		self::$caches[$type] = $cache;
 
-		// Granted we are using a singleton, so shouldn't reach this point for every call, however it's better safe than sorry
-		if (count($cacheTest->getServerList()) < 1) {
-			
-			$knownGoodServers	= array();
-			$serversToAdd		= array();
-			
-	        foreach ($servers as $server) {	        	
-				$serversToAdd[] = array($server, $port);
-	        }
-			
-			$cacheTest->addServers($serversToAdd);
-			
-			foreach ($cacheTest->getStats() as $server => $stats) {
-				
-				// Test if server is actually available
-				if ((false === Hobis_Api_Array_Package::populatedKey('pid', $stats)) ||
-					($stats['pid'] < 0)) {
-					continue;
-				}
-					
-				$knownGoodServers[] = $server;
-			}
-			
-			// It is possible that entire cache pool took a dump
-			if (true === Hobis_Api_Array_Package::populated($knownGoodServers)) {
-				
-				$serversToAdd = array();
-				
-				foreach ($knownGoodServers as $server) {
-					
-					list($host, $port) = array_map('trim', explode(':', $server));
-					
-					$serversToAdd[] = array($host, (int) $port);
-				}
-				
-				if (true === Hobis_Api_Array_Package::populated($serversToAdd)) {
-					$cacheReal->addServers($serversToAdd);
-				}
-			}
-		}
-
-        self::$caches[$type] = $cacheReal;
-
-        return self::$caches[$type];
+        return self::$caches[$type];		
     }
 
     /**
