@@ -9,6 +9,10 @@ class Hobis_Api_Cache_Key
 
     const LOG_NAME_STATUS   = 'cacheKeyStatus';
     const LOG_URI_STATUS    = '/var/log/cache/keyStatus.log';
+	
+	const EXPIRY_ID_30_DAY		= 1;
+	const EXPIRY_ID_3_HOUR		= 2;
+	const EXPIRY_ID_30_MINUTE	= 3;
 
     /**
      * TTL for a key
@@ -40,6 +44,33 @@ class Hobis_Api_Cache_Key
     {
         $this->expiry = $expiry;
     }
+	
+	/**
+	 * Wrapper method for setting expiry by pre-defined id
+	 * 	Helpful so we can centralize common computations for specified durations
+	 */
+	public function setExpiryById($token)
+	{
+		switch ($token) {
+			
+			case self::EXPIRY_ID_30_DAY:
+				
+				$expiry = (60*60*24*30);
+				break;
+				
+			case self::EXPIRY_ID_3_HOUR:
+				
+				$expiry = (60*60*3);
+				break;
+				
+			default:
+				
+				$expiry = 3600;	
+			
+		}
+		
+		$this->expiry = $expiry;
+	}
 
     /**
      * Setter for key

@@ -2,12 +2,19 @@
 
 class Hobis_Api_Cache_Package
 {
+	/**
+	 * Container for cache objects associated to specific namespaces
+	 * 	These objects are purposely associated to specific namespaces so we can incorporate various option settings without collision
+	 */
+	protected static $cachesByNamespace;
+	
     /**
-     * Container for prepared cache objects
+     * Container for cache objects by specific type
+	 * 	This allows us to use cache object without having to re-init a new cache object every time
      *
      * @var array
      */
-    protected static $caches;
+    protected static $cachesByType;
 
     /**
      * Container for valid cache types
@@ -40,21 +47,40 @@ class Hobis_Api_Cache_Package
      * Factory method for creating cache objects
      *
      * @param string
+	 * @param string | Used to allow multiple cache types to be segragated so they can carry boundaried options. One cache object may have differing options than another cache object
      * @return object
      * @throws Hobis_Api_Exception
      */
-    public static function factory($type)
+    public static function factory($type, $namespace)
     {
+    	//-----
         // Validate
-        if (!in_array($type, self::$validTypes)) {
-            throw new Hobis_Api_Exception(sprintf('Invalid $type: %s', $type));
+        //-----
+        if (false === in_array($type, self::$validTypes)) {
+            throw new Hobis_Api_Exception(sprintf('Invalid $type: %s', serialize($type)));
+        } elseif (false === in_array($namespace)) {
+            throw new Hobis_Api_Exception(sprintf('Invalid $namespace: %s', serialize($type)));
         }
+		//-----
 
-        // Attempt to use singleton
-        if (true === Hobis_Api_Array_Package::populatedKey($type, self::$caches)) {
-            return self::$caches[$type];
+        // Attempt to locate pre-existing cache object associated to given namespace
+        if (true === isset(self::$cachesByNamespace[$namespace])) {
+            return self::$cachesByNamespace[$namespace];
         }
-
+		
+		// If no cache object could be found by namespace, lets check to see if we have cache object by type, this will allow us to
+		//	associate a cache object to namespace without having to re-init the primary cache object
+		elseif (true === isset(self::$cachesByType[$type])) {
+			
+			self::$cachesByNamespace[$namespace] = self::$cachesByType[$type];
+			
+            return self::$cachesByNamespace[$namespace];
+        }
+		
+		//-----
+		// No cache object by namespace or type could be found, let's init one
+		//-----
+		
         // Load config
         $settings = sfYaml::load(self::getConfig());
 
@@ -78,9 +104,11 @@ class Hobis_Api_Cache_Package
 				
 		$cache->addServers($serversToAdd);
 		
-		self::$caches[$type] = $cache;
+		self::$cachesByNamespace[$namespace]	= $cache;
+		self::$cachesByType[$type]				= $cache;
+		//-----
 
-        return self::$caches[$type];		
+        return self::$cachesByNamespace[$namespace];		
     }
 
     /**
