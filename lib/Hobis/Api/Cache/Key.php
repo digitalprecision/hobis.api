@@ -13,6 +13,8 @@ class Hobis_Api_Cache_Key
 	const EXPIRY_ID_30_DAY		= 1;
 	const EXPIRY_ID_3_HOUR		= 2;
 	const EXPIRY_ID_30_MINUTE	= 3;
+	const EXPIRY_ID_5_MINUTE	= 4;
+	const EXPIRY_ID_30_SECOND	= 5;
 
     /**
      * TTL for a key
@@ -53,20 +55,29 @@ class Hobis_Api_Cache_Key
 	{
 		switch ($token) {
 			
+			case self::EXPIRY_ID_30_SECOND:
+				
+				$expiry = 30;
+				break;
+			
+			case self::EXPIRY_ID_5_MINUTE:
+				
+				$expiry = (60*5);
+				break;
+			
+			case self::EXPIRY_ID_3_HOUR:
+				
+				$expiry = (60*60*3);
+				break;
+			
 			case self::EXPIRY_ID_30_DAY:
 				
 				$expiry = (60*60*24*30);
 				break;
 				
-			case self::EXPIRY_ID_3_HOUR:
-				
-				$expiry = (60*60*3);
-				break;
-				
 			default:
 				
-				$expiry = 3600;	
-			
+				$expiry = 3600;
 		}
 		
 		$this->expiry = $expiry;
