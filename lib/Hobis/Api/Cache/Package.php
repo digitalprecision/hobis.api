@@ -58,7 +58,7 @@ class Hobis_Api_Cache_Package
         //-----
         if (false === in_array($type, self::$validTypes)) {
             throw new Hobis_Api_Exception(sprintf('Invalid $type: %s', serialize($type)));
-        } elseif (false === in_array($namespace)) {
+        } elseif (false === Hobis_Api_String_Package::populated($namespace)) {
             throw new Hobis_Api_Exception(sprintf('Invalid $namespace: %s', serialize($type)));
         }
 		//-----
