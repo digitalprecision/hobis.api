@@ -25,7 +25,7 @@ class Hobis_Api_Cache extends Memcached
 
         $hitStatus = (false === $deleteStatus) ? Hobis_Api_Cache_Key::STATUS_MISS : Hobis_Api_Cache_Key::STATUS_HIT;
 
-        Hobis_Api_Cache_Key_Package::toStatusLog()->debug(sprintf('Action: delete | CacheKey: %s | Status: %s | Time: %s | Result Message: %s', $key, $hitStatus, serialize($time), $this->getResultMessage()), Hobis_Api_Log::DEBUG_ON_PROD_OVERRIDE);
+        Hobis_Api_Cache_Key_Package::toStatusLog()->debug(sprintf('Action: delete | CacheKey: %s | Status: %s | Time: %s | Result Message: %s', $key, $hitStatus, serialize($time), $this->getResultMessage()));
 
         return $deleteStatus;
     }
@@ -60,7 +60,7 @@ class Hobis_Api_Cache extends Memcached
 
         $hitStatus = (false === $cachedValue) ? Hobis_Api_Cache_Key::STATUS_MISS : Hobis_Api_Cache_Key::STATUS_HIT;
 
-        Hobis_Api_Cache_Key_Package::toStatusLog()->debug(sprintf('Action: get | CacheKey: %s | Status: %s | Result Message: %s', $key, $hitStatus, $this->getResultMessage()), Hobis_Api_Log::DEBUG_ON_PROD_OVERRIDE);
+        Hobis_Api_Cache_Key_Package::toStatusLog()->debug(sprintf('Action: get | CacheKey: %s | Status: %s | Result Message: %s', $key, $hitStatus, $this->getResultMessage()));
 
         return $cachedValue;
     }    
@@ -92,8 +92,6 @@ class Hobis_Api_Cache extends Memcached
         //-----
 
         Hobis_Api_Cache_Key_Package::validate($key);
-		
-		//error_log(sprintf('I called parent set | Value: %s', serialize(igbinary_unserialize($value))));
 
         return parent::set($key, $value, $expiry);
     }

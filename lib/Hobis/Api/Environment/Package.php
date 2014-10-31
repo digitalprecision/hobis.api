@@ -45,25 +45,15 @@ class Hobis_Api_Environment_Package
     public static function getValue($variable)
     {
         // Validate
-        if (!Hobis_Api_String_Package::populated($variable)) {
+        if (false === Hobis_Api_String_Package::populated($variable)) {
             throw new Hobis_Api_Exception(sprintf('Invalid $variable: (%s)', serialize($variable)));
-        }
-
-        // !!CACHEME
-
-        // Load variables from config
-        $variables = sfYaml::load(self::getSourceConfigFilename());
-
-        // Validate
-        if (!Hobis_Api_Array_Package::populatedKey($variable, $variables)) {
-            throw new Hobis_Api_Exception(sprintf('Invalid $variable: (%s)', $variable));
-        }
+        }        
 
         $value = getenv($variable);
 
         // Setting default environment can be dangerous, id prefer if calling code just skip code blocks if enviornment could not be determined
         //  vs. acting as if a valid env was set
-        if (!Hobis_Api_String_Package::populated($value)) {
+        if (false === Hobis_Api_String_Package::populated($value)) {
             throw new Hobis_Api_Exception(sprintf('Environment variable (%s) has no value matching (%s)', $variable, $value));
         }
 
