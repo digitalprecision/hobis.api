@@ -79,6 +79,16 @@ class Hobis_Api_Environment_Package
     {
         return (php_sapi_name() === 'cli') ? true : false;
     }
+	
+	/**
+	 * Wrapper method for determining if current env is dev
+	 * 
+	 * @return bool
+	 */
+	public static function isDev()
+	{
+		return (self::getValue(Hobis_Api_Environment::VAR_LABEL_SERVICE) === Hobis_Api_Environment::DEV) ? true : false;
+	}
 
     /**
      * Wrapper method for determing if we are on a linux os
@@ -89,4 +99,6 @@ class Hobis_Api_Environment_Package
     {
         return (stripos(php_uname(), 'linux') !== false) ? true : false;
     }
+	
+	
 }
