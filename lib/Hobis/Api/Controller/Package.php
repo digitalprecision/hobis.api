@@ -20,7 +20,8 @@ class Hobis_Api_Controller_Package
     protected static $validIps = array(
         '127.0.0.1',
         '10.0.63.254',
-        '207.7.104.10'
+        '207.7.104.10',
+	'70.183.99.114'
     );
 
     /**
