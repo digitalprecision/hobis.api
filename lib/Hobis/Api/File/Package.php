@@ -108,6 +108,34 @@ class Hobis_Api_File_Package
 
     	return pathinfo($fileUri, PATHINFO_EXTENSION);
     }
+
+    /**
+     * Wrapper method for getting mimetype of file
+     *
+     * @param string
+     * @return string
+     * @throws Hobis_Api_Exception
+     */
+    public static function getMimeType($fileUri)
+    {
+        // Validate (just string, no need to waste the stat, will be done via command)
+        if (false === Hobis_Api_String_Package::populated($fileUri)) {
+            throw new Hobis_Api_Exception(sprintf('Invalid $fileUri: %s', serialize($fileUri)));
+        }
+
+        ob_start();
+
+        passthru(sprintf("file -b --mime %s 2>/dev/null | awk '{print $1}'", escapeshellarg($fileUri)), $return);
+
+        if ($return > 0) {
+
+            ob_end_clean();
+
+            throw new Hobis_Api_Exception(sprintf('Unable to determine mimetype: %s', serialize($fileUri)));
+        }
+
+        return str_replace(';', '', trim(ob_get_clean()));
+    }
 	
 	/**
 	 * Wrapper method for getting mod time of given file
