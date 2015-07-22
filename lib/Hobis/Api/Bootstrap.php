@@ -83,10 +83,11 @@ class Hobis_Api_Bootstrap
         //  otherwise if namespaced correctly, having $rootPath will be enough for autoloader to work
         $potentialIncludePaths = array(
             $rootPath,
-            $rootPath . DIRECTORY_SEPARATOR . 'SFComponent',
+            $rootPath . DIRECTORY_SEPARATOR . 'FastImage',
+            $rootPath . DIRECTORY_SEPARATOR . 'MobileDetect',
             $rootPath . DIRECTORY_SEPARATOR . 'PHPThumb',
             $rootPath . DIRECTORY_SEPARATOR . 'PHPMarkdown',
-            $rootPath . DIRECTORY_SEPARATOR . 'MobileDetect'
+            $rootPath . DIRECTORY_SEPARATOR . 'SFComponent'
         );
 
         $existingIncludePaths = array_filter(explode(':', get_include_path()));

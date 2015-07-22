@@ -22,10 +22,10 @@ class Hobis_Api_Social_Facebook_Package
         //-----
         // Validate
         //-----
-        if (!Hobis_Api_String_Package::populated($domain)) {
-            throw new Hobis_Api_Exception('Invalid $domain');
-        } elseif (!Hobis_Api_String_Package::populatedNumeric($siteId)) {
-            throw new Hobis_Api_Exception('Invalid $siteId');
+        if (false === Hobis_Api_String_Package::populated($domain)) {
+            throw new Hobis_Api_Exception(sprintf('Invalid $domain: %s', serialize($domain)));
+        } elseif (false === Hobis_Api_String_Package::populatedNumeric($siteId)) {
+            throw new Hobis_Api_Exception(sprintf('Invalid $siteId: %s', serialize($siteId)));
         }
 
         Hobis_Api_I18N_Package::validateLanguageCode($languageCode);
@@ -38,10 +38,10 @@ class Hobis_Api_Social_Facebook_Package
         //-----
         $settings = sfYaml::load(self::getConfig());
 
-        if (!Hobis_Api_Array_Package::populatedKey($siteId, $settings)) {
-            throw new Hobis_Api_Exception('Invalid $settings[siteId]');
-        } elseif (!Hobis_Api_String_Package::populatedNumeric($settings[$siteId][Hobis_Api_Social_Facebook::APP_ID][$env])) {
-            throw new Hobis_Api_Exception('Invalid $settings[APP_ID]');
+        if (false === Hobis_Api_Array_Package::populatedKey($siteId, $settings)) {
+            throw new Hobis_Api_Exception(sprintf('Invalid $settings[siteId]: %s', serialize($settings)));
+        } elseif (false === Hobis_Api_String_Package::populatedNumeric($settings[$siteId][Hobis_Api_Social_Facebook::APP_ID][$env])) {
+            throw new Hobis_Api_Exception(sprintf('Invalid $settings[APP_ID]: %s', serialize($settings)));
         }
         //-----
 
