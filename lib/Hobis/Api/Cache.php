@@ -7,6 +7,33 @@ class Hobis_Api_Cache extends Memcached
 
     const EXPIRY_DEFAULT    = 3600;
     const EXPIRY_MIN        = 10;
+    
+    /**
+     * Magic method override so we can use our version of get/set
+     *	Otherwise default get/set will break in php 5.5+
+     *
+     * @param string
+     * @param array
+     */
+    public function __call($name, $arguments)
+    {
+        switch ($name)
+        {
+            // Override due to 5.5+ using php-memcache 2.2 and morons not fixing it
+            case 'get':
+            
+                $this->myGet($arguments);
+            
+                break;
+            
+            // Override due to 5.5+ using php-memcache 2.2 and morons not fixing it
+            case 'set':
+            
+                $this->mySet($arguments);
+                
+                break;
+        }
+    }   
 	
 	/**
      * Wrapper method for deleting an item from cache
@@ -49,7 +76,7 @@ class Hobis_Api_Cache extends Memcached
      * @return mixed
      * @throws Hobis_Api_Exception
      */
-    public function get($key, $cacheCallback = null, &$casToken = null)
+    protected function myGet($key, $cacheCallback = null, &$casToken = null, &$udf_flags = NULL)
     {
         // Validate
         if (!Hobis_Api_String_Package::populated($key)) {
@@ -73,7 +100,7 @@ class Hobis_Api_Cache extends Memcached
      * @param int
      * @throws Hobis_Api_Exception
      */
-    public function set($key, $value, $expiry = self::EXPIRY_DEFAULT)
+    protected function mySet($key, $value, $expiry = self::EXPIRY_DEFAULT, &$udf_flags = NULL)
     {
         //-----
         // Validate
