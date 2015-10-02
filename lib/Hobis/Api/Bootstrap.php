@@ -18,7 +18,12 @@ class Hobis_Api_Bootstrap
      */
     public static function exec()
     {
-        if (!self::$initialized) {
+        if (false === self::$initialized) {
+        
+        	// This was needed for upgrade to php5.5+ with php-fpm
+        	//	Source: https://gist.github.com/gjuric/e0c9e45efb3d15e3b949
+        	//	Bug History: http://stackoverflow.com/questions/22575152/sending-errors-to-syslog-in-php-fpm
+        	openlog('php', LOG_ODELAY, LOG_USER);
 
             $bootstrap = new Hobis_Api_Bootstrap();
 
