@@ -7,7 +7,7 @@ class Hobis_Api_Cache extends Memcached
 
     const EXPIRY_DEFAULT    = 3600;
     const EXPIRY_MIN        = 10;
-    
+
     /**
      * Magic method override so we can use our version of get/set
      *	Otherwise default get/set will break in php 5.5+
@@ -21,20 +21,20 @@ class Hobis_Api_Cache extends Memcached
         {
             // Override due to 5.5+ using php-memcache 2.2 and morons not fixing it
             case 'get':
-            
+
                 $this->myGet($arguments);
-            
+
                 break;
-            
+
             // Override due to 5.5+ using php-memcache 2.2 and morons not fixing it
             case 'set':
-            
+
                 $this->mySet($arguments);
-                
+
                 break;
         }
-    }   
-	
+    }
+
 	/**
      * Wrapper method for deleting an item from cache
      *
@@ -52,14 +52,17 @@ class Hobis_Api_Cache extends Memcached
 
         $hitStatus = (false === $deleteStatus) ? Hobis_Api_Cache_Key::STATUS_MISS : Hobis_Api_Cache_Key::STATUS_HIT;
 
-        Hobis_Api_Cache_Key_Package::toStatusLog()->debug(sprintf('Action: delete | CacheKey: %s | Status: %s | Time: %s | Result Message: %s', $key, $hitStatus, serialize($time), $this->getResultMessage()));
+        if (true === Hobis_Api_Environment_Server_Package::isDev()) {
+
+            Hobis_Api_Cache_Key_Package::toStatusLog()->debug(sprintf('Action: delete | CacheKey: %s | Status: %s | Time: %s | Result Message: %s', $key, $hitStatus, serialize($time), $this->getResultMessage()));
+        }
 
         return $deleteStatus;
     }
-	
+
 	/**
 	 * Wrapper method to ease calling code footprint
-	 * 
+	 *
 	 * @param object
 	 */
 	public function easySet(Hobis_Api_Cache_Key $key)
@@ -87,10 +90,13 @@ class Hobis_Api_Cache extends Memcached
 
         $hitStatus = (false === $cachedValue) ? Hobis_Api_Cache_Key::STATUS_MISS : Hobis_Api_Cache_Key::STATUS_HIT;
 
-        Hobis_Api_Cache_Key_Package::toStatusLog()->debug(sprintf('Action: get | CacheKey: %s | Status: %s | Result Message: %s', $key, $hitStatus, $this->getResultMessage()));
+        if (true === Hobis_Api_Environment_Server_Package::isDev()) {
+
+            Hobis_Api_Cache_Key_Package::toStatusLog()->debug(sprintf('Action: get | CacheKey: %s | Status: %s | Result Message: %s', $key, $hitStatus, $this->getResultMessage()));
+        }
 
         return $cachedValue;
-    }    
+    }
 
     /**
      * Wrapper method overriding default behavior for setting a cache value
@@ -106,14 +112,20 @@ class Hobis_Api_Cache extends Memcached
         // Validate
         //-----
         if (false === Hobis_Api_String_Package::populated($key)) {
+
             throw new Hobis_Api_Exception(sprintf('Invalid $key: %s', serialize($key)));
+
         } elseif (false === Hobis_Api_String_Package::populatedNumeric($expiry)) {
+
             throw new Hobis_Api_Exception(sprintf('Invalid $expiry: %s', seralize($expiry)));
+
         } elseif ($expiry < self::EXPIRY_MIN) {
+
             throw new Hobis_Api_Exception(sprintf('Invalid $expiry: %s, must be > %d', serialize($expiry), self::EXPIRY_MIN));
-        } 
+        }
         elseif ((false === Hobis_Api_Array_Package::populated($value)) &&
             	(false === Hobis_Api_String_Package::populated($value))) {
+            
             throw new Hobis_Api_Exception(sprintf('Invalid $value: %s', serialize($value)));
         }
         //-----
