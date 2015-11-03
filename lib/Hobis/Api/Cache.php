@@ -67,7 +67,7 @@ class Hobis_Api_Cache extends Memcached
 	 */
 	public function easySet(Hobis_Api_Cache_Key $key)
 	{
-		return $this->set($key->toString(), $key->getValue(), $key->getExpiry());
+		return $this->mySet($key->toString(), $key->getValue(), $key->getExpiry());
 	}
 
     /**
@@ -87,12 +87,12 @@ class Hobis_Api_Cache extends Memcached
         }
 
         $cachedValue = parent::get($key, $cacheCallback, $casToken);
-
-        $hitStatus = (false === $cachedValue) ? Hobis_Api_Cache_Key::STATUS_MISS : Hobis_Api_Cache_Key::STATUS_HIT;
-
+        
         if (true === Hobis_Api_Environment_Server_Package::isDev()) {
+            
+            $status = (false === $cachedValue) ? Hobis_Api_Cache_Key::STATUS_MISS : Hobis_Api_Cache_Key::STATUS_HIT;
 
-            Hobis_Api_Cache_Key_Package::toStatusLog()->debug(sprintf('Action: get | CacheKey: %s | Status: %s | Result Message: %s', $key, $hitStatus, $this->getResultMessage()));
+            Hobis_Api_Cache_Key_Package::toStatusLog()->debug(sprintf('Action: get | CacheKey: %s | Status: %s | Result Code: %s | Result Message: %s | Options: %s | Server list: %s', serialize($key), serialize($status), serialize($this->getResultCode()), serialize($this->getResultMessage()), serialize($this->getOptions()), serialize($this->getServerList())));
         }
 
         return $cachedValue;
@@ -132,6 +132,13 @@ class Hobis_Api_Cache extends Memcached
 
         Hobis_Api_Cache_Key_Package::validate($key);
 
-        return parent::set($key, $value, $expiry);
+        $status = parent::set($key, $value, $expiry);
+        
+        if (true === Hobis_Api_Environment_Server_Package::isDev()) {
+
+            Hobis_Api_Cache_Key_Package::toStatusLog()->debug(sprintf('Action: set | CacheKey: %s | Status: %s | Result Code: %s | Result Message: %s | Options: %s | Server list: %s', serialize($key), serialize($status), serialize($this->getResultCode()), serialize($this->getResultMessage()), serialize($this->getOptions()), serialize($this->getServerList())));
+        }
+        
+        return $status;
     }
 }
