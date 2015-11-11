@@ -2,10 +2,12 @@
 
 class Hobis_Api_Mail_Package
 {
-	/**
-	 * Singleton for contextHosts
-	 */
-	protected static $contextHosts;
+    /**
+     * Container for config
+     *
+     * @var array
+     */
+    protected static $config;
 
 	/**
 	 * Factory for creating a mail object based off smtp settings in config file
@@ -16,29 +18,40 @@ class Hobis_Api_Mail_Package
 	 */
 	public static function factory(array $options)
 	{
-		// Validate
-		if (!Hobis_Api_Array_Package::populatedKey('contextId', $options)) {
-			throw new Exception(sprintf('Invalid $options[contextId]: %s', serialize($options)));
-		}
-
-        if (false === Hobis_Api_Array_Package::populated(self::$contextHosts)) {
-
-            $settings = sfYaml::load(self::getConfig());
-
-            if (false ===  Hobis_Api_Array_Package::populatedKey('contexts', $settings)) {
-                throw new Hobis_Api_Exception(sprintf('Invalid $settings: %s', serialize($settings)));
-            }
-
-            self::$contextHosts = $settings['contexts'];
+        // Validate
+        if (false === Hobis_Api_Array_Package::populatedKey('contextId', $options)) {
+            
+            throw new Exception(sprintf('Invalid $options[contextId]: %s', serialize($options)));
         }
 
-        if (!Hobis_Api_Array_Package::populatedKey($options['contextId'], self::$contextHosts)) {
-			throw new Exception(sprintf('ContextId mismatch: %s', serialize($options)));
-		}
+        if (false === isset(self::$config)) {
 
-        $transportHost = sprintf('mail.%s', self::$contextHosts[$options['contextId']]);
+            $config = sfYaml::load(self::getConfig());
 
-		$transport = new Zend_Mail_Transport_Smtp($transportHost);
+            //-----
+            // Validate config
+            //-----
+            if (false ===  Hobis_Api_Array_Package::populatedKey('contexts', $config)) {
+                throw new Hobis_Api_Exception(sprintf('Invalid contexts: %s', serialize($config)));
+            }
+            
+            elseif (false ===  Hobis_Api_Array_Package::populatedKey('port', $config)) {
+                throw new Hobis_Api_Exception(sprintf('Invalid port: %s', serialize($config)));
+            }
+            //-----
+            
+            self::$config = $config;
+        }
+
+        if (false === Hobis_Api_Array_Package::populatedKey($options['contextId'], self::$config['contexts'])) {
+
+            throw new Exception(sprintf('ContextId mismatch: %s', serialize($options)));
+        }
+
+        $port           = self::$config['port'];
+        $transportHost  = self::$config['contexts'][$options['contextId']];
+
+        $transport = new Zend_Mail_Transport_Smtp($transportHost, array('port' => $port));
 
         // Hobis_Api_Mail extends Zend_Mail so setting this singleton via Zend_Mail
         // (Hobis_Api_Mail parent) will be accessible by Hobis_Api_Mail
@@ -50,7 +63,7 @@ class Hobis_Api_Mail_Package
         $mail = new Hobis_Api_Mail('UTF-8');
 
         return $mail;
-	}
+    }
 
     /**
      * Wrapper method for cleaning specified parts of email content
