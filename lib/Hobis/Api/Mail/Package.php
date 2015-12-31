@@ -48,10 +48,49 @@ class Hobis_Api_Mail_Package
             throw new Exception(sprintf('ContextId mismatch: %s', serialize($options)));
         }
 
-        $port           = self::$config['port'];
-        $transportHost  = self::$config['contexts'][$options['contextId']];
+        //-----
+        // smtp conf
+        //  Some fields may be optional depending upon setup
+        //-----        
+        $smtpConf['port'] = self::$config['port'];
+        
+        if ((true === Hobis_Api_Array_Package::populatedKey('login_email_address', self::$config)) ||
+            (true === Hobis_Api_Array_Package::populatedKey('login_password', self::$config))) {
+        
+            if (false === Hobis_Api_Array_Package::populatedKey('login_email_address', self::$config)) {
+                
+                throw new Exception(sprintf('login_password given but no login_email_address: %s', serialize(self::$config)));
+            }
+            
+            elseif (false === Hobis_Api_Array_Package::populatedKey('login_password', self::$config)) {
+                
+                throw new Exception(sprintf('login_email_address given but no login_password: %s', serialize(self::$config)));
+            }
+            
+            elseif (587 !== $smtpConf['port']) {
+                
+                throw new Exception(sprintf('Invalid port, expected secure port (587): %s', serialize(self::$config)));
+            }
+            
+            $smtpConf['auth']       = 'login';
+            $smtpConf['password']   = self::$config['login_password'];
+            $smtpConf['ssl']        = 'tls';
+            $smtpConf['username']   = self::$config['login_email_address'];
+        }
+        //-----
+        
+        //-----
+        // Transport host
+        //-----
+        $transportHost = self::$config['contexts'][$options['contextId']];
+        
+        if (true === Hobis_Api_Array_Package::populatedKey('domain', self::$config)) {
+        
+            $transportHost .= sprintf('.%s', self::$config['domain']);
+        }
+        //-----
 
-        $transport = new Zend_Mail_Transport_Smtp($transportHost, array('port' => $port));
+        $transport = new Zend_Mail_Transport_Smtp($transportHost, $smtpConf);
 
         // Hobis_Api_Mail extends Zend_Mail so setting this singleton via Zend_Mail
         // (Hobis_Api_Mail parent) will be accessible by Hobis_Api_Mail
