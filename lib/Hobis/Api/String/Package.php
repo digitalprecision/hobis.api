@@ -174,4 +174,17 @@ class Hobis_Api_String_Package
 
         return $value;
     }
+    
+    /**
+     * Wrapper method for determining which string to use based on count
+     *
+     * @param string
+     * @param string
+     * @param int
+     * @return string
+     */
+    public static function toProperPlurality($singular, $plural, $count)
+    {
+        return ($count > 1) ? $plural : $singular;
+    }
 }
