@@ -16,13 +16,80 @@ class Hobis_Api_String_Package
         // Validate
         //-----
         if (($bytes < 4) || ($bytes > 64)) {
+
             throw new Hobis_Api_Exception(sprintf('Invalid $bytes: %d | Min Value: 4 | Max Value: 64', (int) $bytes));
+            
         } elseif (false === Hobis_Api_Environment_Package::isLinuxOs()) {
+
             throw new Hobis_Api_Exception(sprintf('Unable to generate unique hash on non linux os'));
         }
         //-----
         
         return bin2hex(mcrypt_create_iv($bytes, MCRYPT_DEV_URANDOM));
+    }
+    
+    /**
+     * Wrapper method for generating a hash by a given string
+     *  As of writing this method will ensure at least one lc, uc, and one numeric char
+     *  Passed array which isn't used, but in place for future expansion
+     *
+     * @param array
+     * @return string
+     */
+    public static function generateHashFromString(array $params)
+    {
+        $charsNumeric   = array();
+        $charsSelected  = array();
+        $charsUpper     = array();
+        $sourceString   = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+        
+        do {
+            
+            $charCandidate = substr(str_shuffle($sourceString), 0, 1);
+            
+            if (true === in_array($charCandidate, $charsSelected)) {
+
+                continue;
+            }
+            
+            if (true === is_numeric($charCandidate)) {
+            
+                if (count($charsNumeric) > 1) {
+                    
+                    continue;
+                }
+                
+                $charsNumeric[]     = $charCandidate;
+                $charsSelected[]    = $charCandidate;
+                
+                continue;
+            }
+            
+            if (true === ctype_upper($charCandidate)) {
+                
+                if (count($charsUpper) > 0) {
+                    
+                    continue;
+                }
+                
+                $charsUpper[]       = $charCandidate;
+                $charsSelected[]    = $charCandidate;
+                
+                continue;
+            }
+            
+            if ((count($charsSelected) === 5) && (count($charsNumeric) < 1)) {
+                
+                continue;
+            }
+            
+            $charsSelected[] = $charCandidate;
+            
+        } while (count($charsSelected) < 6);
+
+        shuffle($charsSelected);
+
+        return implode('', $charsSelected);
     }
 
     /**
