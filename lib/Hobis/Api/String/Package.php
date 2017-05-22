@@ -254,4 +254,24 @@ class Hobis_Api_String_Package
     {
         return ($count > 1) ? $plural : $singular;
     }
+
+    /**
+     * Wrapper method for converting string from underscore to camel case
+     *
+     * @param string
+     * @return string
+     * @throws Exception
+     */
+    public static function underscoreToCamelCase($source)
+    {
+        // Validate
+        if (false === self::populated($source)) {
+
+            throw new Hobis_Api_Exception(sprintf('Invalid $source: %s', serialize($source)));
+        }
+
+        $filter = new Zend_Filter_Word_UnderscoreToCamelCase();
+
+        return $filter->filter($source);
+    }
 }

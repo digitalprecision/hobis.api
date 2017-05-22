@@ -92,7 +92,8 @@ class Hobis_Api_Bootstrap
             $rootPath . DIRECTORY_SEPARATOR . 'MobileDetect',
             $rootPath . DIRECTORY_SEPARATOR . 'PHPThumb',
             $rootPath . DIRECTORY_SEPARATOR . 'PHPMarkdown',
-            $rootPath . DIRECTORY_SEPARATOR . 'SFComponent'
+            $rootPath . DIRECTORY_SEPARATOR . 'SFComponent',
+	    $rootPath . DIRECTORY_SEPARATOR . 'Component/Console'
         );
 
         $existingIncludePaths = array_filter(explode(':', get_include_path()));
