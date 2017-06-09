@@ -99,7 +99,7 @@ class Hobis_Api_Password_Package
             throw new Hobis_Api_Exception(sprintf('Invalid $password: %s', $password));
         }
 
-        $salt = base64_encode(mcrypt_create_iv(Hobis_Api_Password::LENGTH_BYTES_SALT, MCRYPT_DEV_URANDOM));
+        $salt = base64_encode(random_bytes(Hobis_Api_Password::LENGTH_BYTES_SALT));
 
         $iterationCount = mt_rand(Hobis_Api_Password::ITERATION_RANGE_LOW, Hobis_Api_Password::ITERATION_RANGE_HIGH);
 
