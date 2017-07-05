@@ -36,7 +36,7 @@ class Hobis_Api_Crypt_Package
             throw new Hobis_Api_Exception('Invalid $cryptDescriptor');
         }
 
-        $iv = mcrypt_create_iv(mcrypt_enc_get_iv_size($cryptDescriptor));
+        $iv = random_bytes(mcrypt_enc_get_iv_size($cryptDescriptor));
 
         if ($iv === false) {
             throw new Hobis_Api_Exception('Invalid $iv');

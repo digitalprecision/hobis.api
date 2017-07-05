@@ -25,7 +25,7 @@ class Hobis_Api_String_Package
         }
         //-----
         
-        return bin2hex(mcrypt_create_iv($bytes, MCRYPT_DEV_URANDOM));
+        return bin2hex(random_bytes($bytes));
     }
     
     /**
