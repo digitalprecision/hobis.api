@@ -176,6 +176,17 @@ class Hobis_Api_String_Package
 
         return (mb_strlen($string) > 0) ? true : false;
     }
+        
+    /**
+     * Convience method for determining if arg is binary
+     *
+     * @param string $var
+     * @return bool
+     */
+    public static function populatedBinary($string)
+    {
+        return ((mb_strlen($string) > 0) && (false !== preg_match('/^[01]+$/', $string))) ? true : false;
+    }    
 
     /**
      * Convience method for determining if arg is empty and numeric

@@ -58,11 +58,13 @@ class Hobis_Api_Log_Package
     {
         // Validate
         if (!Hobis_Api_String_Package::populated($message)) {
+
             throw new Hobis_Api_Exception('Invalid $message');
         }
 
-        if (Hobis_Api_Array_Package::populatedKey('UNIQUE_ID', $_SERVER)) {
-            $message = $_SERVER['UNIQUE_ID'] . ': ' . $message;
+        if (Hobis_Api_Array_Package::populatedKey('X_REQUEST_ID', $_SERVER)) {
+
+            $message = $_SERVER['X_REQUEST_ID'] . ': ' . $message;
         }
 
         return $message;
