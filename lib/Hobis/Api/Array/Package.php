@@ -138,24 +138,38 @@ class Hobis_Api_Array_Package
      */
     public static function populatedKey($key, $array, $specificValue = null, $strict = true)
     {
-        if ((is_array($array)) &&
-            (array_key_exists($key, $array))) {
+        if ((true === is_array($array)) || (true === method_exists($array, 'toArray'))) {
+            
+            if (true === method_exists($array, 'toArray')) {
+                
+                $array = $array->toArray();
+            }
+            
+            if (false === array_key_exists($key, $array)) {
+                
+                return false;
+            }
 
-            if (is_array($array[$key])) {
+            elseif (true === is_array($array[$key])) {
+                
                 return (count($array[$key]) > 0) ? true : false;
             }
 
-            elseif (is_object($array[$key])) {
+            elseif (true === is_object($array[$key])) {
+                
                 return true;
             }
 
             elseif (mb_strlen($array[$key]) > 0) {
 
-                if (!is_null($specificValue)) {
+                if (false === is_null($specificValue)) {
 
                     if ($strict === true) {
+                        
                         return ($array[$key] === $specificValue) ? true : false;
+                        
                     } else {
+                        
                         return ($array[$key] == $specificValue) ? true : false;
                     }
                 }
